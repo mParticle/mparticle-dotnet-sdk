@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.Promotion
+# mParticle.Model.Promotion
 ## Properties
 
 Name | Type | Description | Notes

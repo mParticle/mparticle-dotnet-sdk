@@ -1,24 +1,17 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// GeoLocation
     /// </summary>
     [DataContract]
-    public partial class GeoLocation :  IEquatable<GeoLocation>, IValidatableObject
+    public partial class GeoLocation : IEquatable<GeoLocation>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GeoLocation" /> class.
@@ -37,23 +30,23 @@ namespace mParticle.Sdk.Model
             this.Longitude = longitude;
             this.Accuracy = accuracy;
         }
-        
+
         /// <summary>
         /// Gets or Sets Latitude
         /// </summary>
-        [DataMember(Name="latitude", EmitDefaultValue=false)]
+        [DataMember(Name= "latitude", EmitDefaultValue= false)]
         public decimal Latitude { get; set; }
 
         /// <summary>
         /// Gets or Sets Longitude
         /// </summary>
-        [DataMember(Name="longitude", EmitDefaultValue=false)]
+        [DataMember(Name= "longitude", EmitDefaultValue= false)]
         public decimal Longitude { get; set; }
 
         /// <summary>
         /// Gets or Sets Accuracy
         /// </summary>
-        [DataMember(Name="accuracy", EmitDefaultValue=false)]
+        [DataMember(Name= "accuracy", EmitDefaultValue= false)]
         public decimal Accuracy { get; set; }
 
         /// <summary>
@@ -70,7 +63,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -100,15 +93,15 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Latitude == input.Latitude ||
                     this.Latitude.Equals(input.Latitude)
-                ) && 
+                ) &&
                 (
                     this.Longitude == input.Longitude ||
                     this.Longitude.Equals(input.Longitude)
-                ) && 
+                ) &&
                 (
                     this.Accuracy == input.Accuracy ||
                     this.Accuracy.Equals(input.Accuracy)
@@ -136,7 +129,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

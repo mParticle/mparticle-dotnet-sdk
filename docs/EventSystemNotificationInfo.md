@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.EventSystemNotificationInfo
+# mParticle.Model.EventSystemNotificationInfo
 ## Properties
 
 Name | Type | Description | Notes

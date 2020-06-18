@@ -1,24 +1,18 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// SourceInformation
     /// </summary>
     [DataContract]
-    public partial class SourceInformation :  IEquatable<SourceInformation>, IValidatableObject
+    public partial class SourceInformation : IEquatable<SourceInformation>, IValidatableObject
     {
         /// <summary>
         /// Defines Channel
@@ -67,7 +61,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets Channel
         /// </summary>
-        [DataMember(Name="channel", EmitDefaultValue=false)]
+        [DataMember(Name= "channel", EmitDefaultValue= false)]
         public ChannelEnum? Channel { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceInformation" /> class.
@@ -85,29 +79,29 @@ namespace mParticle.Sdk.Model
             this.ReplayJobId = replayJobId;
             this.IsHistorical = isHistorical;
         }
-        
+
         /// <summary>
         /// Gets or Sets Partner
         /// </summary>
-        [DataMember(Name="partner", EmitDefaultValue=false)]
+        [DataMember(Name= "partner", EmitDefaultValue= false)]
         public string Partner { get; set; }
 
         /// <summary>
         /// Gets or Sets ReplayRequestId
         /// </summary>
-        [DataMember(Name="replay_request_id", EmitDefaultValue=false)]
+        [DataMember(Name= "replay_request_id", EmitDefaultValue= false)]
         public string ReplayRequestId { get; set; }
 
         /// <summary>
         /// Gets or Sets ReplayJobId
         /// </summary>
-        [DataMember(Name="replay_job_id", EmitDefaultValue=false)]
+        [DataMember(Name= "replay_job_id", EmitDefaultValue= false)]
         public string ReplayJobId { get; set; }
 
         /// <summary>
         /// Gets or Sets IsHistorical
         /// </summary>
-        [DataMember(Name="is_historical", EmitDefaultValue=false)]
+        [DataMember(Name= "is_historical", EmitDefaultValue= false)]
         public bool IsHistorical { get; set; }
 
         /// <summary>
@@ -126,7 +120,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -156,26 +150,26 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Channel == input.Channel ||
                     this.Channel.Equals(input.Channel)
-                ) && 
+                ) &&
                 (
                     this.Partner == input.Partner ||
                     (this.Partner != null &&
                     this.Partner.Equals(input.Partner))
-                ) && 
+                ) &&
                 (
                     this.ReplayRequestId == input.ReplayRequestId ||
                     (this.ReplayRequestId != null &&
                     this.ReplayRequestId.Equals(input.ReplayRequestId))
-                ) && 
+                ) &&
                 (
                     this.ReplayJobId == input.ReplayJobId ||
                     (this.ReplayJobId != null &&
                     this.ReplayJobId.Equals(input.ReplayJobId))
-                ) && 
+                ) &&
                 (
                     this.IsHistorical == input.IsHistorical ||
                     this.IsHistorical.Equals(input.IsHistorical)
@@ -208,7 +202,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

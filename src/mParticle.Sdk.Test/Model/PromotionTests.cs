@@ -7,13 +7,13 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using mParticle.Sdk.Api;
-using mParticle.Sdk.Model;
-using mParticle.Sdk.Client;
+using mParticle.Api;
+using mParticle.Model;
+using mParticle.Client;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Test
+namespace mParticle.Test
 {
     /// <summary>
     ///  Class for testing Promotion

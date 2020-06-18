@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.OptOutEventDataAllOf
+# mParticle.Model.OptOutEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes

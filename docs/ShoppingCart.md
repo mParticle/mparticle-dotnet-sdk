@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ShoppingCart
+# mParticle.Model.ShoppingCart
 ## Properties
 
 Name | Type | Description | Notes

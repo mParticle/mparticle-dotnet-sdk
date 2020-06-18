@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ScreenViewEventData
+# mParticle.Model.ScreenViewEventData
 ## Properties
 
 Name | Type | Description | Notes

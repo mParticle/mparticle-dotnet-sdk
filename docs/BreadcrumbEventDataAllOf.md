@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.BreadcrumbEventDataAllOf
+# mParticle.Model.BreadcrumbEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes

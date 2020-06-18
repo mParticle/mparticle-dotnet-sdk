@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.CommerceEvent
+# mParticle.Model.CommerceEvent
 ## Properties
 
 Name | Type | Description | Notes

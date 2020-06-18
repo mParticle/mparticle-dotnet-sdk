@@ -1,24 +1,18 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// EventSystemNotificationInfo
     /// </summary>
     [DataContract]
-    public partial class EventSystemNotificationInfo :  IEquatable<EventSystemNotificationInfo>, IValidatableObject
+    public partial class EventSystemNotificationInfo : IEquatable<EventSystemNotificationInfo>, IValidatableObject
     {
         /// <summary>
         /// Defines Type
@@ -37,7 +31,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
-        [DataMember(Name="type", EmitDefaultValue=false)]
+        [DataMember(Name= "type", EmitDefaultValue= false)]
         public TypeEnum Type { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="EventSystemNotificationInfo" /> class.
@@ -52,7 +46,7 @@ namespace mParticle.Sdk.Model
         {
             this.Type = type;
         }
-        
+
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
@@ -65,7 +59,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -95,7 +89,7 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Type == input.Type ||
                     this.Type.Equals(input.Type)
@@ -121,7 +115,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

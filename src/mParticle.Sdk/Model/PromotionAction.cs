@@ -1,24 +1,20 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// PromotionAction
     /// </summary>
     [DataContract]
-    public partial class PromotionAction :  IEquatable<PromotionAction>, IValidatableObject
+    public partial class PromotionAction : IEquatable<PromotionAction>, IValidatableObject
     {
         /// <summary>
         /// Defines Action
@@ -43,7 +39,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets Action
         /// </summary>
-        [DataMember(Name="action", EmitDefaultValue=false)]
+        [DataMember(Name= "action", EmitDefaultValue= false)]
         public ActionEnum Action { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="PromotionAction" /> class.
@@ -55,17 +51,17 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="action">action (required).</param>
         /// <param name="promotions">promotions (required).</param>
-        public PromotionAction(ActionEnum action = default(ActionEnum), Collection<Promotion> promotions = default(Collection<Promotion>))
+        public PromotionAction(ActionEnum action, Collection<Promotion> promotions)
         {
             this.Action = action;
             // to ensure "promotions" is required (not null)
             this.Promotions = promotions ?? throw new ArgumentNullException("promotions is a required property for PromotionAction and cannot be null");
         }
-        
+
         /// <summary>
         /// Gets or Sets Promotions
         /// </summary>
-        [DataMember(Name="promotions", EmitDefaultValue=false)]
+        [DataMember(Name= "promotions", EmitDefaultValue= false)]
         public Collection<Promotion> Promotions { get; set; }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -111,11 +107,11 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Action == input.Action ||
                     this.Action.Equals(input.Action)
-                ) && 
+                ) &&
                 (
                     this.Promotions == input.Promotions ||
                     this.Promotions != null &&
@@ -145,7 +141,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

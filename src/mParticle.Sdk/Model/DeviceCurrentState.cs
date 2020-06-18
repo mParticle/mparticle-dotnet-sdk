@@ -1,24 +1,18 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// DeviceCurrentState
     /// </summary>
     [DataContract]
-    public partial class DeviceCurrentState :  IEquatable<DeviceCurrentState>, IValidatableObject
+    public partial class DeviceCurrentState : IEquatable<DeviceCurrentState>, IValidatableObject
     {
         /// <summary>
         /// Defines DeviceOrientation
@@ -79,7 +73,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets DeviceOrientation
         /// </summary>
-        [DataMember(Name="device_orientation", EmitDefaultValue=false)]
+        [DataMember(Name= "device_orientation", EmitDefaultValue= false)]
         public DeviceOrientationEnum? DeviceOrientation { get; set; }
         /// <summary>
         /// Defines StatusBarOrientation
@@ -140,7 +134,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets StatusBarOrientation
         /// </summary>
-        [DataMember(Name="status_bar_orientation", EmitDefaultValue=false)]
+        [DataMember(Name= "status_bar_orientation", EmitDefaultValue= false)]
         public StatusBarOrientationEnum? StatusBarOrientation { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceCurrentState" /> class.
@@ -182,95 +176,95 @@ namespace mParticle.Sdk.Model
             this.DeviceOrientation = deviceOrientation;
             this.StatusBarOrientation = statusBarOrientation;
         }
-        
+
         /// <summary>
         /// Gets or Sets TimeSinceStartMs
         /// </summary>
-        [DataMember(Name="time_since_start_ms", EmitDefaultValue=false)]
+        [DataMember(Name= "time_since_start_ms", EmitDefaultValue= false)]
         public int TimeSinceStartMs { get; set; }
 
         /// <summary>
         /// Gets or Sets BatteryLevel
         /// </summary>
-        [DataMember(Name="battery_level", EmitDefaultValue=false)]
+        [DataMember(Name= "battery_level", EmitDefaultValue= false)]
         public decimal BatteryLevel { get; set; }
 
         /// <summary>
         /// Gets or Sets DataConnectionType
         /// </summary>
-        [DataMember(Name="data_connection_type", EmitDefaultValue=false)]
+        [DataMember(Name= "data_connection_type", EmitDefaultValue= false)]
         public string DataConnectionType { get; set; }
 
         /// <summary>
         /// Gets or Sets DataConnectionTypeDetail
         /// </summary>
-        [DataMember(Name="data_connection_type_detail", EmitDefaultValue=false)]
+        [DataMember(Name= "data_connection_type_detail", EmitDefaultValue= false)]
         public string DataConnectionTypeDetail { get; set; }
 
         /// <summary>
         /// Gets or Sets GpsState
         /// </summary>
-        [DataMember(Name="gps_state", EmitDefaultValue=false)]
+        [DataMember(Name= "gps_state", EmitDefaultValue= false)]
         public bool GpsState { get; set; }
 
         /// <summary>
         /// Gets or Sets TotalSystemMemoryUsageBytes
         /// </summary>
-        [DataMember(Name="total_system_memory_usage_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "total_system_memory_usage_bytes", EmitDefaultValue= false)]
         public int TotalSystemMemoryUsageBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets DiskSpaceFreeBytes
         /// </summary>
-        [DataMember(Name="disk_space_free_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "disk_space_free_bytes", EmitDefaultValue= false)]
         public int DiskSpaceFreeBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets ExternalDiskSpaceFreeBytes
         /// </summary>
-        [DataMember(Name="external_disk_space_free_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "external_disk_space_free_bytes", EmitDefaultValue= false)]
         public int ExternalDiskSpaceFreeBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets Cpu
         /// </summary>
-        [DataMember(Name="cpu", EmitDefaultValue=false)]
+        [DataMember(Name= "cpu", EmitDefaultValue= false)]
         public string Cpu { get; set; }
 
         /// <summary>
         /// Gets or Sets SystemMemoryAvailableBytes
         /// </summary>
-        [DataMember(Name="system_memory_available_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "system_memory_available_bytes", EmitDefaultValue= false)]
         public decimal SystemMemoryAvailableBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets SystemMemoryLow
         /// </summary>
-        [DataMember(Name="system_memory_low", EmitDefaultValue=false)]
+        [DataMember(Name= "system_memory_low", EmitDefaultValue= false)]
         public bool SystemMemoryLow { get; set; }
 
         /// <summary>
         /// Gets or Sets SystemMemoryThresholdBytes
         /// </summary>
-        [DataMember(Name="system_memory_threshold_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "system_memory_threshold_bytes", EmitDefaultValue= false)]
         public decimal SystemMemoryThresholdBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets ApplicationMemoryAvailableBytes
         /// </summary>
-        [DataMember(Name="application_memory_available_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "application_memory_available_bytes", EmitDefaultValue= false)]
         public decimal ApplicationMemoryAvailableBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets ApplicationMemoryMaxBytes
         /// </summary>
-        [DataMember(Name="application_memory_max_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "application_memory_max_bytes", EmitDefaultValue= false)]
         public decimal ApplicationMemoryMaxBytes { get; set; }
 
         /// <summary>
         /// Gets or Sets ApplicationMemoryTotalBytes
         /// </summary>
-        [DataMember(Name="application_memory_total_bytes", EmitDefaultValue=false)]
+        [DataMember(Name= "application_memory_total_bytes", EmitDefaultValue= false)]
         public decimal ApplicationMemoryTotalBytes { get; set; }
 
         /// <summary>
@@ -301,7 +295,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -331,74 +325,74 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.TimeSinceStartMs == input.TimeSinceStartMs ||
                     this.TimeSinceStartMs.Equals(input.TimeSinceStartMs)
-                ) && 
+                ) &&
                 (
                     this.BatteryLevel == input.BatteryLevel ||
                     this.BatteryLevel.Equals(input.BatteryLevel)
-                ) && 
+                ) &&
                 (
                     this.DataConnectionType == input.DataConnectionType ||
                     (this.DataConnectionType != null &&
                     this.DataConnectionType.Equals(input.DataConnectionType))
-                ) && 
+                ) &&
                 (
                     this.DataConnectionTypeDetail == input.DataConnectionTypeDetail ||
                     (this.DataConnectionTypeDetail != null &&
                     this.DataConnectionTypeDetail.Equals(input.DataConnectionTypeDetail))
-                ) && 
+                ) &&
                 (
                     this.GpsState == input.GpsState ||
                     this.GpsState.Equals(input.GpsState)
-                ) && 
+                ) &&
                 (
                     this.TotalSystemMemoryUsageBytes == input.TotalSystemMemoryUsageBytes ||
                     this.TotalSystemMemoryUsageBytes.Equals(input.TotalSystemMemoryUsageBytes)
-                ) && 
+                ) &&
                 (
                     this.DiskSpaceFreeBytes == input.DiskSpaceFreeBytes ||
                     this.DiskSpaceFreeBytes.Equals(input.DiskSpaceFreeBytes)
-                ) && 
+                ) &&
                 (
                     this.ExternalDiskSpaceFreeBytes == input.ExternalDiskSpaceFreeBytes ||
                     this.ExternalDiskSpaceFreeBytes.Equals(input.ExternalDiskSpaceFreeBytes)
-                ) && 
+                ) &&
                 (
                     this.Cpu == input.Cpu ||
                     (this.Cpu != null &&
                     this.Cpu.Equals(input.Cpu))
-                ) && 
+                ) &&
                 (
                     this.SystemMemoryAvailableBytes == input.SystemMemoryAvailableBytes ||
                     this.SystemMemoryAvailableBytes.Equals(input.SystemMemoryAvailableBytes)
-                ) && 
+                ) &&
                 (
                     this.SystemMemoryLow == input.SystemMemoryLow ||
                     this.SystemMemoryLow.Equals(input.SystemMemoryLow)
-                ) && 
+                ) &&
                 (
                     this.SystemMemoryThresholdBytes == input.SystemMemoryThresholdBytes ||
                     this.SystemMemoryThresholdBytes.Equals(input.SystemMemoryThresholdBytes)
-                ) && 
+                ) &&
                 (
                     this.ApplicationMemoryAvailableBytes == input.ApplicationMemoryAvailableBytes ||
                     this.ApplicationMemoryAvailableBytes.Equals(input.ApplicationMemoryAvailableBytes)
-                ) && 
+                ) &&
                 (
                     this.ApplicationMemoryMaxBytes == input.ApplicationMemoryMaxBytes ||
                     this.ApplicationMemoryMaxBytes.Equals(input.ApplicationMemoryMaxBytes)
-                ) && 
+                ) &&
                 (
                     this.ApplicationMemoryTotalBytes == input.ApplicationMemoryTotalBytes ||
                     this.ApplicationMemoryTotalBytes.Equals(input.ApplicationMemoryTotalBytes)
-                ) && 
+                ) &&
                 (
                     this.DeviceOrientation == input.DeviceOrientation ||
                     this.DeviceOrientation.Equals(input.DeviceOrientation)
-                ) && 
+                ) &&
                 (
                     this.StatusBarOrientation == input.StatusBarOrientation ||
                     this.StatusBarOrientation.Equals(input.StatusBarOrientation)
@@ -443,7 +437,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

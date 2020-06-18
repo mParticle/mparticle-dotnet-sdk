@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.UserIdentity
+# mParticle.Model.UserIdentity
 ## Properties
 
 Name | Type | Description | Notes

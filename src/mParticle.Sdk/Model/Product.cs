@@ -1,18 +1,12 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// Product
@@ -28,7 +22,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="Product" /> class.
         /// </summary>
-        /// <param name="id">id (required).</param>
+        /// <param name="sku">id (required).</param>
         /// <param name="name">name (required).</param>
         /// <param name="brand">brand (required).</param>
         /// <param name="category">category (required).</param>
@@ -40,34 +34,29 @@ namespace mParticle.Sdk.Model
         /// <param name="addedToCartTimeMs">addedToCartTimeMs (required).</param>
         /// <param name="totalProductAmount">totalProductAmount (required).</param>
         /// <param name="customAttributes">customAttributes (required).</param>
-        public Product(string id = default(string), string name = default(string), string brand = default(string), string category = default(string), string variant = default(string), int position = default(int), decimal price = default(decimal), decimal quantity = default(decimal), string couponCode = default(string), int addedToCartTimeMs = default(int), decimal totalProductAmount = default(decimal), Dictionary<string, string> customAttributes = default(Dictionary<string, string>))
+        public Product(string sku, string name, string brand = default(string), string category = default(string), string variant = default(string), int position = default(int), decimal price = default(decimal), decimal quantity = default(decimal), string couponCode = default(string), int addedToCartTimeMs = default(int), decimal totalProductAmount = default(decimal), Dictionary<string, string> customAttributes = default(Dictionary<string, string>))
         {
             // to ensure "id" is required (not null)
-            this.Id = id ?? throw new ArgumentNullException("id is a required property for Product and cannot be null");
+            this.Sku = sku ?? throw new ArgumentNullException("id is a required property for Product and cannot be null");
             // to ensure "name" is required (not null)
             this.Name = name ?? throw new ArgumentNullException("name is a required property for Product and cannot be null");
-            // to ensure "brand" is required (not null)
-            this.Brand = brand ?? throw new ArgumentNullException("brand is a required property for Product and cannot be null");
-            // to ensure "category" is required (not null)
-            this.Category = category ?? throw new ArgumentNullException("category is a required property for Product and cannot be null");
-            // to ensure "variant" is required (not null)
-            this.Variant = variant ?? throw new ArgumentNullException("variant is a required property for Product and cannot be null");
+            this.Brand = brand;
+            this.Category = category;
+            this.Variant = variant;
             this.Position = position;
             this.Price = price;
             this.Quantity = quantity;
-            // to ensure "couponCode" is required (not null)
-            this.CouponCode = couponCode ?? throw new ArgumentNullException("couponCode is a required property for Product and cannot be null");
+            this.CouponCode = couponCode;
             this.AddedToCartTimeMs = addedToCartTimeMs;
             this.TotalProductAmount = totalProductAmount;
-            // to ensure "customAttributes" is required (not null)
-            this.CustomAttributes = customAttributes ?? throw new ArgumentNullException("customAttributes is a required property for Product and cannot be null");
+            this.CustomAttributes = customAttributes;
         }
         
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public string Id { get; set; }
+        public string Sku { get; set; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -143,7 +132,7 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class Product {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  Id: ").Append(Sku).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Brand: ").Append(Brand).Append("\n");
             sb.Append("  Category: ").Append(Category).Append("\n");
@@ -190,9 +179,9 @@ namespace mParticle.Sdk.Model
 
             return 
                 (
-                    this.Id == input.Id ||
-                    (this.Id != null &&
-                    this.Id.Equals(input.Id))
+                    this.Sku == input.Sku ||
+                    (this.Sku != null &&
+                    this.Sku.Equals(input.Sku))
                 ) && 
                 (
                     this.Name == input.Name ||
@@ -256,8 +245,8 @@ namespace mParticle.Sdk.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Id != null)
-                    hashCode = hashCode * 59 + this.Id.GetHashCode();
+                if (this.Sku != null)
+                    hashCode = hashCode * 59 + this.Sku.GetHashCode();
                 if (this.Name != null)
                     hashCode = hashCode * 59 + this.Name.GetHashCode();
                 if (this.Brand != null)
@@ -284,7 +273,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

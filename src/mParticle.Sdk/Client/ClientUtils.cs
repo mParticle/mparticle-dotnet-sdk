@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace mParticle.Sdk.Client
+namespace mParticle.Client
 {
     /// <summary>
     /// Utility functions providing some benefit to API client consumers.
@@ -49,7 +49,7 @@ namespace mParticle.Sdk.Client
 
             return parameters;
         }
-        
+
         /// <summary>
         /// If parameter is DateTime, output in a formatted string (default ISO 8601), customizable with Configuration.DateTime.
         /// If parameter is a list, join the list with ",".
@@ -65,13 +65,13 @@ namespace mParticle.Sdk.Client
                 // Defaults to an ISO 8601, using the known as a Round-trip date/time pattern ("o")
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
-                return dateTime.ToString((configuration ?? GlobalConfiguration.Instance).DateTimeFormat);
+                return dateTime.ToString((configuration).DateTimeFormat);
             if (obj is DateTimeOffset dateTimeOffset)
                 // Return a formatted date string - Can be customized with Configuration.DateTimeFormat
                 // Defaults to an ISO 8601, using the known as a Round-trip date/time pattern ("o")
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
-                return dateTimeOffset.ToString((configuration ?? GlobalConfiguration.Instance).DateTimeFormat);
+                return dateTimeOffset.ToString((configuration).DateTimeFormat);
             if (obj is bool boolean)
                 return boolean ? "true" : "false";
             if (obj is ICollection collection)

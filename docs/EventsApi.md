@@ -1,4 +1,4 @@
-# mParticle.Sdk.Api.EventsApi
+# mParticle.Api.EventsApi
 
 All URIs are relative to *https://s2s.mparticle.com/v2*
 
@@ -18,9 +18,9 @@ Send events to mParticle
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using mParticle.Sdk.Api;
-using mParticle.Sdk.Client;
-using mParticle.Sdk.Model;
+using mParticle.Api;
+using mParticle.Client;
+using mParticle.Model;
 
 namespace Example
 {
@@ -90,9 +90,9 @@ Send events to mParticle
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using mParticle.Sdk.Api;
-using mParticle.Sdk.Client;
-using mParticle.Sdk.Model;
+using mParticle.Api;
+using mParticle.Client;
+using mParticle.Model;
 
 namespace Example
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace mParticle.Sdk.Client
+namespace mParticle.Client
 {
     /// <summary>
     /// API Exception

@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ApplicationStateTransitionEvent
+# mParticle.Model.ApplicationStateTransitionEvent
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.DataPlanContext
+# mParticle.Model.DataPlanContext
 ## Properties
 
 Name | Type | Description | Notes

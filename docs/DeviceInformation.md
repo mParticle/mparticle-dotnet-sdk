@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.DeviceInformation
+# mParticle.Model.DeviceInformation
 ## Properties
 
 Name | Type | Description | Notes

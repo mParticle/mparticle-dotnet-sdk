@@ -1,24 +1,20 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ProductAction
     /// </summary>
     [DataContract]
-    public partial class ProductAction :  IEquatable<ProductAction>, IValidatableObject
+    public partial class ProductAction : IEquatable<ProductAction>, IValidatableObject
     {
         /// <summary>
         /// Defines Action
@@ -91,7 +87,7 @@ namespace mParticle.Sdk.Model
         /// <summary>
         /// Gets or Sets Action
         /// </summary>
-        [DataMember(Name="action", EmitDefaultValue=false)]
+        [DataMember(Name= "action", EmitDefaultValue= false)]
         public ActionEnum Action { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductAction" /> class.
@@ -113,93 +109,93 @@ namespace mParticle.Sdk.Model
         /// <param name="shippingAmount">shippingAmount (required).</param>
         /// <param name="couponCode">couponCode (required).</param>
         /// <param name="products">products (required).</param>
-        public ProductAction(ActionEnum action = default(ActionEnum), int checkoutStep = default(int), string checkoutOptions = default(string), string productActionList = default(string), string productListSource = default(string), string transactionId = default(string), string affiliation = default(string), decimal totalAmount = default(decimal), decimal taxAmount = default(decimal), decimal shippingAmount = default(decimal), string couponCode = default(string), Collection<Product> products = default(Collection<Product>))
+        public ProductAction(ActionEnum action, int checkoutStep = default(int), string checkoutOptions = default(string), string productActionList = default(string), string productListSource = default(string), string transactionId = default(string), string affiliation = default(string), decimal totalAmount = default(decimal), decimal taxAmount = default(decimal), decimal shippingAmount = default(decimal), string couponCode = default(string), Collection<Product> products = default(Collection<Product>))
         {
             this.Action = action;
             this.CheckoutStep = checkoutStep;
             // to ensure "checkoutOptions" is required (not null)
-            this.CheckoutOptions = checkoutOptions ?? throw new ArgumentNullException("checkoutOptions is a required property for ProductAction and cannot be null");
+            this.CheckoutOptions = checkoutOptions;
             // to ensure "productActionList" is required (not null)
-            this.ProductActionList = productActionList ?? throw new ArgumentNullException("productActionList is a required property for ProductAction and cannot be null");
+            this.ProductActionList = productActionList;
             // to ensure "productListSource" is required (not null)
-            this.ProductListSource = productListSource ?? throw new ArgumentNullException("productListSource is a required property for ProductAction and cannot be null");
+            this.ProductListSource = productListSource;
             // to ensure "transactionId" is required (not null)
-            this.TransactionId = transactionId ?? throw new ArgumentNullException("transactionId is a required property for ProductAction and cannot be null");
+            this.TransactionId = transactionId;
             // to ensure "affiliation" is required (not null)
-            this.Affiliation = affiliation ?? throw new ArgumentNullException("affiliation is a required property for ProductAction and cannot be null");
+            this.Affiliation = affiliation;
             this.TotalAmount = totalAmount;
             this.TaxAmount = taxAmount;
             this.ShippingAmount = shippingAmount;
             // to ensure "couponCode" is required (not null)
-            this.CouponCode = couponCode ?? throw new ArgumentNullException("couponCode is a required property for ProductAction and cannot be null");
+            this.CouponCode = couponCode;
             // to ensure "products" is required (not null)
-            this.Products = products ?? throw new ArgumentNullException("products is a required property for ProductAction and cannot be null");
+            this.Products = products;
         }
-        
+
         /// <summary>
         /// Gets or Sets CheckoutStep
         /// </summary>
-        [DataMember(Name="checkout_step", EmitDefaultValue=false)]
+        [DataMember(Name= "checkout_step", EmitDefaultValue= false)]
         public int CheckoutStep { get; set; }
 
         /// <summary>
         /// Gets or Sets CheckoutOptions
         /// </summary>
-        [DataMember(Name="checkout_options", EmitDefaultValue=false)]
+        [DataMember(Name= "checkout_options", EmitDefaultValue= false)]
         public string CheckoutOptions { get; set; }
 
         /// <summary>
         /// Gets or Sets ProductActionList
         /// </summary>
-        [DataMember(Name="product_action_list", EmitDefaultValue=false)]
+        [DataMember(Name= "product_action_list", EmitDefaultValue= false)]
         public string ProductActionList { get; set; }
 
         /// <summary>
         /// Gets or Sets ProductListSource
         /// </summary>
-        [DataMember(Name="product_list_source", EmitDefaultValue=false)]
+        [DataMember(Name= "product_list_source", EmitDefaultValue= false)]
         public string ProductListSource { get; set; }
 
         /// <summary>
         /// Gets or Sets TransactionId
         /// </summary>
-        [DataMember(Name="transaction_id", EmitDefaultValue=false)]
+        [DataMember(Name= "transaction_id", EmitDefaultValue= false)]
         public string TransactionId { get; set; }
 
         /// <summary>
         /// Gets or Sets Affiliation
         /// </summary>
-        [DataMember(Name="affiliation", EmitDefaultValue=false)]
+        [DataMember(Name= "affiliation", EmitDefaultValue= false)]
         public string Affiliation { get; set; }
 
         /// <summary>
         /// Gets or Sets TotalAmount
         /// </summary>
-        [DataMember(Name="total_amount", EmitDefaultValue=false)]
+        [DataMember(Name= "total_amount", EmitDefaultValue= false)]
         public decimal TotalAmount { get; set; }
 
         /// <summary>
         /// Gets or Sets TaxAmount
         /// </summary>
-        [DataMember(Name="tax_amount", EmitDefaultValue=false)]
+        [DataMember(Name= "tax_amount", EmitDefaultValue= false)]
         public decimal TaxAmount { get; set; }
 
         /// <summary>
         /// Gets or Sets ShippingAmount
         /// </summary>
-        [DataMember(Name="shipping_amount", EmitDefaultValue=false)]
+        [DataMember(Name= "shipping_amount", EmitDefaultValue= false)]
         public decimal ShippingAmount { get; set; }
 
         /// <summary>
         /// Gets or Sets CouponCode
         /// </summary>
-        [DataMember(Name="coupon_code", EmitDefaultValue=false)]
+        [DataMember(Name= "coupon_code", EmitDefaultValue= false)]
         public string CouponCode { get; set; }
 
         /// <summary>
         /// Gets or Sets Products
         /// </summary>
-        [DataMember(Name="products", EmitDefaultValue=false)]
+        [DataMember(Name= "products", EmitDefaultValue= false)]
         public Collection<Product> Products { get; set; }
 
         /// <summary>
@@ -225,7 +221,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -255,57 +251,57 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Action == input.Action ||
                     this.Action.Equals(input.Action)
-                ) && 
+                ) &&
                 (
                     this.CheckoutStep == input.CheckoutStep ||
                     this.CheckoutStep.Equals(input.CheckoutStep)
-                ) && 
+                ) &&
                 (
                     this.CheckoutOptions == input.CheckoutOptions ||
                     (this.CheckoutOptions != null &&
                     this.CheckoutOptions.Equals(input.CheckoutOptions))
-                ) && 
+                ) &&
                 (
                     this.ProductActionList == input.ProductActionList ||
                     (this.ProductActionList != null &&
                     this.ProductActionList.Equals(input.ProductActionList))
-                ) && 
+                ) &&
                 (
                     this.ProductListSource == input.ProductListSource ||
                     (this.ProductListSource != null &&
                     this.ProductListSource.Equals(input.ProductListSource))
-                ) && 
+                ) &&
                 (
                     this.TransactionId == input.TransactionId ||
                     (this.TransactionId != null &&
                     this.TransactionId.Equals(input.TransactionId))
-                ) && 
+                ) &&
                 (
                     this.Affiliation == input.Affiliation ||
                     (this.Affiliation != null &&
                     this.Affiliation.Equals(input.Affiliation))
-                ) && 
+                ) &&
                 (
                     this.TotalAmount == input.TotalAmount ||
                     this.TotalAmount.Equals(input.TotalAmount)
-                ) && 
+                ) &&
                 (
                     this.TaxAmount == input.TaxAmount ||
                     this.TaxAmount.Equals(input.TaxAmount)
-                ) && 
+                ) &&
                 (
                     this.ShippingAmount == input.ShippingAmount ||
                     this.ShippingAmount.Equals(input.ShippingAmount)
-                ) && 
+                ) &&
                 (
                     this.CouponCode == input.CouponCode ||
                     (this.CouponCode != null &&
                     this.CouponCode.Equals(input.CouponCode))
-                ) && 
+                ) &&
                 (
                     this.Products == input.Products ||
                     this.Products != null &&
@@ -351,7 +347,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

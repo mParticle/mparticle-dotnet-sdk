@@ -1,60 +1,45 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ProfileEvent
     /// </summary>
     [DataContract]
-    public partial class ProfileEvent :  IEquatable<ProfileEvent>, IValidatableObject
+    public partial class ProfileEvent : BaseEvent, IEquatable<ProfileEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Profile for value: profile
-            /// </summary>
-            [EnumMember(Value = "profile")]
-            Profile = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+       
         /// <summary>
         /// Initializes a new instance of the <see cref="ProfileEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Profile).</param>
-        public ProfileEvent(ProfileEventData data = default(ProfileEventData), EventTypeEnum? eventType = EventTypeEnum.Profile)
-        {
-            this.Data = data;
-            this.EventType = eventType;
-        }
-        
+        public ProfileEvent(): base(EventTypeEnum.Profile)
+        {}
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets PreviousMpid
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public ProfileEventData Data { get; set; }
+        [DataMember(Name = "previous_mpid", EmitDefaultValue = false)]
+        public int PreviousMpid { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CurrentMpid
+        /// </summary>
+        [DataMember(Name = "current_mpid", EmitDefaultValue = false)]
+        public int CurrentMpid { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ProfileEventType
+        /// </summary>
+        [DataMember(Name = "profile_event_type", EmitDefaultValue = false)]
+        public ProfileEventTypeEnum ProfileEventType { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +49,12 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class ProfileEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  PreviousMpid: ").Append(PreviousMpid).Append("\n");
+            sb.Append("  CurrentMpid: ").Append(CurrentMpid).Append("\n");
+            sb.Append("  ProfileEventType: ").Append(ProfileEventType).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +77,19 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.PreviousMpid == input.PreviousMpid ||
+                    this.PreviousMpid.Equals(input.PreviousMpid)
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.CurrentMpid == input.CurrentMpid ||
+                    this.CurrentMpid.Equals(input.CurrentMpid)
+                ) &&
+                (
+                    this.ProfileEventType == input.ProfileEventType ||
+                    this.ProfileEventType.Equals(input.ProfileEventType)
                 );
         }
 
@@ -119,10 +101,10 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                hashCode = hashCode * 59 + this.PreviousMpid.GetHashCode();
+                hashCode = hashCode * 59 + this.CurrentMpid.GetHashCode();
+                hashCode = hashCode * 59 + this.ProfileEventType.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,9 +114,47 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
+        }
+
+        /// <summary>
+        /// Defines ProfileEventType
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum ProfileEventTypeEnum
+        {
+            /// <summary>
+            /// Enum Signup for value: signup
+            /// </summary>
+            [EnumMember(Value = "signup")]
+            Signup = 1,
+
+            /// <summary>
+            /// Enum Login for value: login
+            /// </summary>
+            [EnumMember(Value = "login")]
+            Login = 2,
+
+            /// <summary>
+            /// Enum Logout for value: logout
+            /// </summary>
+            [EnumMember(Value = "logout")]
+            Logout = 3,
+
+            /// <summary>
+            /// Enum Update for value: update
+            /// </summary>
+            [EnumMember(Value = "update")]
+            Update = 4,
+
+            /// <summary>
+            /// Enum Delete for value: delete
+            /// </summary>
+            [EnumMember(Value = "delete")]
+            Delete = 5
+
         }
     }
 

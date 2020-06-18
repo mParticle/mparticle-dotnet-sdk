@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.EventType
+# mParticle.Model.EventType
 ## Properties
 
 Name | Type | Description | Notes

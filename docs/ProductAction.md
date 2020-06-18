@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ProductAction
+# mParticle.Model.ProductAction
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ProfileEventDataAllOf
+# mParticle.Model.ProfileEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes

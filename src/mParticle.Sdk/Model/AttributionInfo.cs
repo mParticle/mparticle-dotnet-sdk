@@ -10,9 +10,9 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using OpenAPIDateConverter = mParticle.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// AttributionInfo
@@ -31,7 +31,7 @@ namespace mParticle.Sdk.Model
         /// <param name="serviceProvider">serviceProvider (required).</param>
         /// <param name="publisher">publisher (required).</param>
         /// <param name="campaign">campaign (required).</param>
-        public AttributionInfo(string serviceProvider = default(string), string publisher = default(string), string campaign = default(string))
+        public AttributionInfo(string serviceProvider, string publisher, string campaign)
         {
             // to ensure "serviceProvider" is required (not null)
             this.ServiceProvider = serviceProvider ?? throw new ArgumentNullException("serviceProvider is a required property for AttributionInfo and cannot be null");
@@ -145,7 +145,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

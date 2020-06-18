@@ -1,61 +1,28 @@
 using System;
 using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// Batch
     /// </summary>
     [DataContract]
-    public partial class Batch :  IEquatable<Batch>, IValidatableObject
+    public partial class Batch : BaseBatch
     {
-        /// <summary>
-        /// Defines Environment
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EnvironmentEnum
-        {
-            /// <summary>
-            /// Enum Unknown for value: unknown
-            /// </summary>
-            [EnumMember(Value = "unknown")]
-            Unknown = 1,
 
-            /// <summary>
-            /// Enum Development for value: development
-            /// </summary>
-            [EnumMember(Value = "development")]
-            Development = 2,
-
-            /// <summary>
-            /// Enum Production for value: production
-            /// </summary>
-            [EnumMember(Value = "production")]
-            Production = 3
-
-        }
-
-        /// <summary>
-        /// Gets or Sets Environment
-        /// </summary>
-        [DataMember(Name="environment", EmitDefaultValue=false)]
-        public EnvironmentEnum Environment { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="Batch" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected Batch() { }
+        protected Batch() {
+            this.Events = new Collection<BaseEvent>();
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Batch" /> class.
         /// </summary>
@@ -68,8 +35,6 @@ namespace mParticle.Sdk.Model
         /// <param name="deletedUserAttributes">deletedUserAttributes.</param>
         /// <param name="userIdentities">userIdentities.</param>
         /// <param name="environment">environment (required) (default to EnvironmentEnum.Production).</param>
-        /// <param name="apiKey">apiKey.</param>
-        /// <param name="apiKeys">apiKeys.</param>
         /// <param name="ip">ip.</param>
         /// <param name="integrationAttributes">integrationAttributes.</param>
         /// <param name="partnerIdentity">partnerIdentity.</param>
@@ -82,165 +47,35 @@ namespace mParticle.Sdk.Model
         /// <param name="sdkVersion">sdkVersion.</param>
         /// <param name="consentState">consentState.</param>
         /// <param name="jobId">jobId.</param>
-        public Batch(string sourceRequestId = default(string), BatchContext context = default(BatchContext), Collection<BaseEvent> events = default(Collection<BaseEvent>), DeviceInformation deviceInfo = default(DeviceInformation), ApplicationInformation applicationInfo = default(ApplicationInformation), Dictionary<string, Object> userAttributes = default(Dictionary<string, Object>), Collection<string> deletedUserAttributes = default(Collection<string>), BatchUserIdentities userIdentities = default(BatchUserIdentities), EnvironmentEnum environment = EnvironmentEnum.Production, string apiKey = default(string), Collection<string> apiKeys = default(Collection<string>), string ip = default(string), Dictionary<string, Dictionary<string, string>> integrationAttributes = default(Dictionary<string, Dictionary<string, string>>), string partnerIdentity = default(string), SourceInformation sourceInfo = default(SourceInformation), string mpDeviceid = default(string), AttributionInfo attributionInfo = default(AttributionInfo), long timestampUnixtimeMs = default(long), long batchId = default(long), long mpid = default(long), string sdkVersion = default(string), ConsentState consentState = default(ConsentState), string jobId = default(string))
+        public Batch(string sourceRequestId = default(string), BatchContext context = default(BatchContext), Collection<BaseEvent> events = default(Collection<BaseEvent>), DeviceInformation deviceInfo = default(DeviceInformation), ApplicationInformation applicationInfo = default(ApplicationInformation), Dictionary<string, Object> userAttributes = default(Dictionary<string, Object>), Collection<string> deletedUserAttributes = default(Collection<string>), BatchUserIdentities userIdentities = default(BatchUserIdentities), EnvironmentEnum environment = EnvironmentEnum.Production, string ip = default(string), Dictionary<string, Dictionary<string, string>> integrationAttributes = default(Dictionary<string, Dictionary<string, string>>), string partnerIdentity = default(string), SourceInformation sourceInfo = default(SourceInformation), string mpDeviceid = default(string), AttributionInfo attributionInfo = default(AttributionInfo), long timestampUnixtimeMs = default(long), long batchId = default(long), long mpid = default(long), string sdkVersion = default(string), ConsentState consentState = default(ConsentState), string jobId = default(string)) :
+            base(sourceRequestId, context, deviceInfo, applicationInfo, userAttributes, deletedUserAttributes, userIdentities, environment, ip, integrationAttributes, partnerIdentity, sourceInfo, mpDeviceid, attributionInfo, timestampUnixtimeMs, batchId, mpid, sdkVersion, consentState, jobId)
         {
-            this.Environment = environment;
-            this.SourceRequestId = sourceRequestId;
-            this.Context = context;
-            this.Events = events;
-            this.DeviceInfo = deviceInfo;
-            this.ApplicationInfo = applicationInfo;
-            this.UserAttributes = userAttributes;
-            this.DeletedUserAttributes = deletedUserAttributes;
-            this.UserIdentities = userIdentities;
-            this.ApiKey = apiKey;
-            this.ApiKeys = apiKeys;
-            this.Ip = ip;
-            this.IntegrationAttributes = integrationAttributes;
-            this.PartnerIdentity = partnerIdentity;
-            this.SourceInfo = sourceInfo;
-            this.MpDeviceid = mpDeviceid;
-            this.AttributionInfo = attributionInfo;
-            this.TimestampUnixtimeMs = timestampUnixtimeMs;
-            this.BatchId = batchId;
-            this.Mpid = mpid;
-            this.SdkVersion = sdkVersion;
-            this.ConsentState = consentState;
-            this.JobId = jobId;
+            this.Events = events ?? new Collection<BaseEvent>();
         }
-        
-        /// <summary>
-        /// Gets or Sets SourceRequestId
-        /// </summary>
-        [DataMember(Name="source_request_id", EmitDefaultValue=false)]
-        public string SourceRequestId { get; set; }
 
         /// <summary>
-        /// Gets or Sets Context
+        /// Create a concrete Batch from an AbstractBatch
         /// </summary>
-        [DataMember(Name="context", EmitDefaultValue=false)]
-        public BatchContext Context { get; set; }
+        public Batch(BaseBatch abstractBatch) : base(abstractBatch)
+        {
+            this.Events = new Collection<BaseEvent>();
+        }
 
+
+
+        [DataMember(Name = "events", EmitDefaultValue = false)]
+        internal List<EventWrapper> eventsWrappers
+        {
+            get
+            {
+                return Events.Select(x => new EventWrapper(x)).ToList();
+            }
+        }
         /// <summary>
-        /// Provide a list of event objects - such as CustomEvent, ScreenViewEvent, or CommerceEvent
+        /// Provide a list of BaseEvent objects - such as CustomEvent, ScreenViewEvent, or CommerceEvent
         /// </summary>
-        /// <value>Provide a list of event objects - such as CustomEvent, ScreenViewEvent, or CommerceEvent</value>
-        [DataMember(Name="events", EmitDefaultValue=false)]
+        /// <value>Provide a list of BaseEvent objects - such as CustomEvent, ScreenViewEvent, or CommerceEvent</value>
         public Collection<BaseEvent> Events { get; set; }
-
-        /// <summary>
-        /// Gets or Sets DeviceInfo
-        /// </summary>
-        [DataMember(Name="device_info", EmitDefaultValue=false)]
-        public DeviceInformation DeviceInfo { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ApplicationInfo
-        /// </summary>
-        [DataMember(Name="application_info", EmitDefaultValue=false)]
-        public ApplicationInformation ApplicationInfo { get; set; }
-
-        /// <summary>
-        /// Gets or Sets UserAttributes
-        /// </summary>
-        [DataMember(Name="user_attributes", EmitDefaultValue=false)]
-        public Dictionary<string, Object> UserAttributes { get; set; }
-
-        /// <summary>
-        /// Gets or Sets DeletedUserAttributes
-        /// </summary>
-        [DataMember(Name="deleted_user_attributes", EmitDefaultValue=false)]
-        public Collection<string> DeletedUserAttributes { get; set; }
-
-        /// <summary>
-        /// Gets or Sets UserIdentities
-        /// </summary>
-        [DataMember(Name="user_identities", EmitDefaultValue=false)]
-        public BatchUserIdentities UserIdentities { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ApiKey
-        /// </summary>
-        [DataMember(Name="api_key", EmitDefaultValue=false)]
-        public string ApiKey { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ApiKeys
-        /// </summary>
-        [DataMember(Name="api_keys", EmitDefaultValue=false)]
-        public Collection<string> ApiKeys { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Ip
-        /// </summary>
-        [DataMember(Name="ip", EmitDefaultValue=false)]
-        public string Ip { get; set; }
-
-        /// <summary>
-        /// Gets or Sets IntegrationAttributes
-        /// </summary>
-        [DataMember(Name="integration_attributes", EmitDefaultValue=false)]
-        public Dictionary<string, Dictionary<string, string>> IntegrationAttributes { get; set; }
-
-        /// <summary>
-        /// Gets or Sets PartnerIdentity
-        /// </summary>
-        [DataMember(Name="partner_identity", EmitDefaultValue=false)]
-        public string PartnerIdentity { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SourceInfo
-        /// </summary>
-        [DataMember(Name="source_info", EmitDefaultValue=false)]
-        public SourceInformation SourceInfo { get; set; }
-
-        /// <summary>
-        /// Gets or Sets MpDeviceid
-        /// </summary>
-        [DataMember(Name="mp_deviceid", EmitDefaultValue=false)]
-        public string MpDeviceid { get; set; }
-
-        /// <summary>
-        /// Gets or Sets AttributionInfo
-        /// </summary>
-        [DataMember(Name="attribution_info", EmitDefaultValue=false)]
-        public AttributionInfo AttributionInfo { get; set; }
-
-        /// <summary>
-        /// Gets or Sets TimestampUnixtimeMs
-        /// </summary>
-        [DataMember(Name="timestamp_unixtime_ms", EmitDefaultValue=false)]
-        public long TimestampUnixtimeMs { get; set; }
-
-        /// <summary>
-        /// Gets or Sets BatchId
-        /// </summary>
-        [DataMember(Name="batch_id", EmitDefaultValue=false)]
-        public long BatchId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Mpid
-        /// </summary>
-        [DataMember(Name="mpid", EmitDefaultValue=false)]
-        public long Mpid { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SdkVersion
-        /// </summary>
-        [DataMember(Name="sdk_version", EmitDefaultValue=false)]
-        public string SdkVersion { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ConsentState
-        /// </summary>
-        [DataMember(Name="consent_state", EmitDefaultValue=false)]
-        public ConsentState ConsentState { get; set; }
-
-        /// <summary>
-        /// Gets or Sets JobId
-        /// </summary>
-        [DataMember(Name="job_id", EmitDefaultValue=false)]
-        public string JobId { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -260,7 +95,6 @@ namespace mParticle.Sdk.Model
             sb.Append("  UserIdentities: ").Append(UserIdentities).Append("\n");
             sb.Append("  Environment: ").Append(Environment).Append("\n");
             sb.Append("  ApiKey: ").Append(ApiKey).Append("\n");
-            sb.Append("  ApiKeys: ").Append(ApiKeys).Append("\n");
             sb.Append("  Ip: ").Append(Ip).Append("\n");
             sb.Append("  IntegrationAttributes: ").Append(IntegrationAttributes).Append("\n");
             sb.Append("  PartnerIdentity: ").Append(PartnerIdentity).Append("\n");
@@ -275,15 +109,6 @@ namespace mParticle.Sdk.Model
             sb.Append("  JobId: ").Append(JobId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -358,12 +183,6 @@ namespace mParticle.Sdk.Model
                     this.ApiKey == input.ApiKey ||
                     (this.ApiKey != null &&
                     this.ApiKey.Equals(input.ApiKey))
-                ) && 
-                (
-                    this.ApiKeys == input.ApiKeys ||
-                    this.ApiKeys != null &&
-                    input.ApiKeys != null &&
-                    this.ApiKeys.SequenceEqual(input.ApiKeys)
                 ) && 
                 (
                     this.Ip == input.Ip ||
@@ -453,8 +272,6 @@ namespace mParticle.Sdk.Model
                 hashCode = hashCode * 59 + this.Environment.GetHashCode();
                 if (this.ApiKey != null)
                     hashCode = hashCode * 59 + this.ApiKey.GetHashCode();
-                if (this.ApiKeys != null)
-                    hashCode = hashCode * 59 + this.ApiKeys.GetHashCode();
                 if (this.Ip != null)
                     hashCode = hashCode * 59 + this.Ip.GetHashCode();
                 if (this.IntegrationAttributes != null)
@@ -479,16 +296,5 @@ namespace mParticle.Sdk.Model
                 return hashCode;
             }
         }
-
-        /// <summary>
-        /// To validate all properties of the instance
-        /// </summary>
-        /// <param name="validationContext">Validation context</param>
-        /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
-        {
-            yield break;
-        }
     }
-
 }

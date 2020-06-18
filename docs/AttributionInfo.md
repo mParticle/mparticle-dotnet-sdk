@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.AttributionInfo
+# mParticle.Model.AttributionInfo
 ## Properties
 
 Name | Type | Description | Notes

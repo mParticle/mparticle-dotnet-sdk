@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.BaseEvent
+# mParticle.Model.BaseEvent
 ## Properties
 
 Name | Type | Description | Notes

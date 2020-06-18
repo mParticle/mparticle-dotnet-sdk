@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.GDPRConsentState
+# mParticle.Model.GDPRConsentState
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.DeviceCurrentState
+# mParticle.Model.DeviceCurrentState
 ## Properties
 
 Name | Type | Description | Notes

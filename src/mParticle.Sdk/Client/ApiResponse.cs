@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace mParticle.Sdk.Client
+namespace mParticle.Client
 {
     /// <summary>
     /// Provides a non-generic contract for the ApiResponse wrapper.
@@ -53,7 +53,7 @@ namespace mParticle.Sdk.Client
     public class ApiResponse<T> : IApiResponse
     {
         #region Properties
-        
+
         /// <summary>
         /// Gets or sets the status code (HTTP status code)
         /// </summary>
@@ -101,12 +101,12 @@ namespace mParticle.Sdk.Client
         /// <summary>
         /// The raw content
         /// </summary>
-        public string RawContent { get;}
-        
+        public string RawContent { get; }
+
         #endregion Properties
-        
+
         #region Constructors
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiResponse{T}" /> class.
         /// </summary>
