@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.CrashReportEventData
+# mParticle.Model.CrashReportEventData
 ## Properties
 
 Name | Type | Description | Notes

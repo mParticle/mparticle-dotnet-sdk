@@ -1,24 +1,17 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// DataPlanContext
     /// </summary>
     [DataContract]
-    public partial class DataPlanContext :  IEquatable<DataPlanContext>, IValidatableObject
+    public partial class DataPlanContext : IEquatable<DataPlanContext>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataPlanContext" /> class.
@@ -30,23 +23,23 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="planId">planId (required).</param>
         /// <param name="planVersion">planVersion.</param>
-        public DataPlanContext(string planId = default(string), int planVersion = default(int))
+        public DataPlanContext(string planId, int planVersion = default(int))
         {
             // to ensure "planId" is required (not null)
             this.PlanId = planId ?? throw new ArgumentNullException("planId is a required property for DataPlanContext and cannot be null");
             this.PlanVersion = planVersion;
         }
-        
+
         /// <summary>
         /// Gets or Sets PlanId
         /// </summary>
-        [DataMember(Name="plan_id", EmitDefaultValue=false)]
+        [DataMember(Name= "plan_id", EmitDefaultValue= false)]
         public string PlanId { get; set; }
 
         /// <summary>
         /// Gets or Sets PlanVersion
         /// </summary>
-        [DataMember(Name="plan_version", EmitDefaultValue=false)]
+        [DataMember(Name= "plan_version", EmitDefaultValue= false)]
         public int PlanVersion { get; set; }
 
         /// <summary>
@@ -62,7 +55,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -92,12 +85,12 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.PlanId == input.PlanId ||
                     (this.PlanId != null &&
                     this.PlanId.Equals(input.PlanId))
-                ) && 
+                ) &&
                 (
                     this.PlanVersion == input.PlanVersion ||
                     this.PlanVersion.Equals(input.PlanVersion)
@@ -125,7 +118,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

@@ -1,60 +1,46 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
+using EventTypeEnum = mParticle.Model.EventType;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using mParticle.Client;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// CustomEvent
     /// </summary>
     [DataContract]
-    public partial class CustomEvent :  IEquatable<CustomEvent>, IValidatableObject
+    public partial class CustomEvent :  BaseEvent, IEquatable<CustomEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Customevent for value: custom_event
-            /// </summary>
-            [EnumMember(Value = "custom_event")]
-            Customevent = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+       
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Customevent).</param>
-        public CustomEvent(CustomEventData data = default(CustomEventData), EventTypeEnum? eventType = EventTypeEnum.Customevent)
+        /// <param name="eventName">the event name.</param>
+        /// <param name="customEventType">the custom event type</param>
+        public CustomEvent(string eventName, CustomEventTypeEnum customEventType = CustomEventTypeEnum.Other): base(EventTypeEnum.Customevent) 
         {
-            this.Data = data;
-            this.EventType = eventType;
+            EventName = eventName;
+            CustomEventType = customEventType;
         }
+
+        /// <summary>
+        /// Gets or Sets CustomEventType
+        /// </summary>
+        [DataMember(Name="custom_event_type", EmitDefaultValue=false)]
+        public CustomEventTypeEnum CustomEventType { get; set; }
+   
         
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets EventName
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public CustomEventData Data { get; set; }
+        [DataMember(Name="event_name", EmitDefaultValue=false)]
+        public string EventName { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,21 +50,12 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class CustomEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append("  EventName: ").Append(EventName).Append("\n");
+            sb.Append("  CustomEventType: ").Append(CustomEventType).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
   
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
         /// <summary>
         /// Returns true if objects are equal
         /// </summary>
@@ -100,14 +77,13 @@ namespace mParticle.Sdk.Model
                 return false;
 
             return 
-                (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
+                base.Equals(input) && (
+                    this.EventName == input.EventName ||
+                    (this.EventName != null &&
+                    this.EventName.Equals(input.EventName))
                 ) && 
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.CustomEventType == input.CustomEventType
                 );
         }
 
@@ -119,10 +95,10 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                if (this.EventName != null)
+                    hashCode = hashCode * 59 + this.EventName.GetHashCode();
+                hashCode = hashCode * 59 + this.CustomEventType.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,9 +108,65 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
+        }
+
+        /// <summary>
+        /// Defines CustomEventType
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum CustomEventTypeEnum
+        {
+            /// <summary>
+            /// Enum Navigation for value: navigation
+            /// </summary>
+            [EnumMember(Value = "navigation")]
+            Navigation = 1,
+
+            /// <summary>
+            /// Enum Location for value: location
+            /// </summary>
+            [EnumMember(Value = "location")]
+            Location = 2,
+
+            /// <summary>
+            /// Enum Search for value: search
+            /// </summary>
+            [EnumMember(Value = "search")]
+            Search = 3,
+
+            /// <summary>
+            /// Enum Transaction for value: transaction
+            /// </summary>
+            [EnumMember(Value = "transaction")]
+            Transaction = 4,
+
+            /// <summary>
+            /// Enum Usercontent for value: user_content
+            /// </summary>
+            [EnumMember(Value = "user_content")]
+            Usercontent = 5,
+
+            /// <summary>
+            /// Enum Userpreference for value: user_preference
+            /// </summary>
+            [EnumMember(Value = "user_preference")]
+            Userpreference = 6,
+
+            /// <summary>
+            /// Enum Social for value: social
+            /// </summary>
+            [EnumMember(Value = "social")]
+            Social = 7,
+
+            /// <summary>
+            /// Enum Other for value: other
+            /// </summary>
+            [EnumMember(Value = "other")]
+            Other = 8
+
         }
     }
 

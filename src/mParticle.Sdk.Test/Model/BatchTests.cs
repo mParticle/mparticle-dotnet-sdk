@@ -7,13 +7,13 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using mParticle.Sdk.Api;
-using mParticle.Sdk.Model;
-using mParticle.Sdk.Client;
+using mParticle.Api;
+using mParticle.Model;
+using mParticle.Client;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Test
+namespace mParticle.Test
 {
     /// <summary>
     ///  Class for testing Batch
@@ -121,22 +121,7 @@ namespace mParticle.Sdk.Test
         {
             // TODO unit test for the property 'Environment'
         }
-        /// <summary>
-        /// Test the property 'ApiKey'
-        /// </summary>
-        [Fact]
-        public void ApiKeyTest()
-        {
-            // TODO unit test for the property 'ApiKey'
-        }
-        /// <summary>
-        /// Test the property 'ApiKeys'
-        /// </summary>
-        [Fact]
-        public void ApiKeysTest()
-        {
-            // TODO unit test for the property 'ApiKeys'
-        }
+    
         /// <summary>
         /// Test the property 'Ip'
         /// </summary>

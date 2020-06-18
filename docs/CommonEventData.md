@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.CommonEventData
+# mParticle.Model.CommonEventData
 ## Properties
 
 Name | Type | Description | Notes

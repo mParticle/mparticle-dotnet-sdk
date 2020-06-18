@@ -1,60 +1,69 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// NetworkPerformanceEvent
     /// </summary>
     [DataContract]
-    public partial class NetworkPerformanceEvent :  IEquatable<NetworkPerformanceEvent>, IValidatableObject
+    public partial class NetworkPerformanceEvent : BaseEvent, IEquatable<NetworkPerformanceEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Networkperformance for value: network_performance
-            /// </summary>
-            [EnumMember(Value = "network_performance")]
-            Networkperformance = 1
 
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPerformanceEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Networkperformance).</param>
-        public NetworkPerformanceEvent(NetworkPerformanceEventData data = default(NetworkPerformanceEventData), EventTypeEnum? eventType = EventTypeEnum.Networkperformance)
+        /// <param name="url">the url.</param>
+        public NetworkPerformanceEvent(string url): base(EventTypeEnum.Networkperformance)
         {
-            this.Data = data;
-            this.EventType = eventType;
+            this.Url = url ?? throw new ArgumentNullException("url is a required property for NetworkPerformanceEventData and cannot be null");
         }
-        
+
+        /// <summary>
+        /// Gets or Sets HttpVerb
+        /// </summary>
+        [DataMember(Name = "http_verb", EmitDefaultValue = false)]
+        public string HttpVerb { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Url
+        /// </summary>
+        [DataMember(Name = "url", EmitDefaultValue = false)]
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or Sets TimeElapsed
+        /// </summary>
+        [DataMember(Name = "time_elapsed", EmitDefaultValue = false)]
+        public int TimeElapsed { get; set; }
+
+        /// <summary>
+        /// Gets or Sets BytesIn
+        /// </summary>
+        [DataMember(Name = "bytes_in", EmitDefaultValue = false)]
+        public int BytesIn { get; set; }
+
+        /// <summary>
+        /// Gets or Sets BytesOut
+        /// </summary>
+        [DataMember(Name = "bytes_out", EmitDefaultValue = false)]
+        public int BytesOut { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ResponseCode
+        /// </summary>
+        [DataMember(Name = "response_code", EmitDefaultValue = false)]
+        public int ResponseCode { get; set; }
+
         /// <summary>
         /// Gets or Sets Data
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public NetworkPerformanceEventData Data { get; set; }
+        [DataMember(Name = "data", EmitDefaultValue = false)]
+        public string Data { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +73,16 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class NetworkPerformanceEvent {\n");
+            sb.Append(base.ToString());
+            sb.Append("  HttpVerb: ").Append(HttpVerb).Append("\n");
+            sb.Append("  Url: ").Append(Url).Append("\n");
+            sb.Append("  TimeElapsed: ").Append(TimeElapsed).Append("\n");
+            sb.Append("  BytesIn: ").Append(BytesIn).Append("\n");
+            sb.Append("  BytesOut: ").Append(BytesOut).Append("\n");
+            sb.Append("  ResponseCode: ").Append(ResponseCode).Append("\n");
             sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +105,38 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
+                (
+                    this.HttpVerb == input.HttpVerb ||
+                    (this.HttpVerb != null &&
+                    this.HttpVerb.Equals(input.HttpVerb))
+                ) &&
+                (
+                    this.Url == input.Url ||
+                    (this.Url != null &&
+                    this.Url.Equals(input.Url))
+                ) &&
+                (
+                    this.TimeElapsed == input.TimeElapsed ||
+                    this.TimeElapsed.Equals(input.TimeElapsed)
+                ) &&
+                (
+                    this.BytesIn == input.BytesIn ||
+                    this.BytesIn.Equals(input.BytesIn)
+                ) &&
+                (
+                    this.BytesOut == input.BytesOut ||
+                    this.BytesOut.Equals(input.BytesOut)
+                ) &&
+                (
+                    this.ResponseCode == input.ResponseCode ||
+                    this.ResponseCode.Equals(input.ResponseCode)
+                ) &&
                 (
                     this.Data == input.Data ||
                     (this.Data != null &&
                     this.Data.Equals(input.Data))
-                ) && 
-                (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
                 );
         }
 
@@ -120,9 +149,17 @@ namespace mParticle.Sdk.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
+                hashCode = base.GetHashCode();
+                if (this.HttpVerb != null)
+                    hashCode = hashCode * 59 + this.HttpVerb.GetHashCode();
+                if (this.Url != null)
+                    hashCode = hashCode * 59 + this.Url.GetHashCode();
+                hashCode = hashCode * 59 + this.TimeElapsed.GetHashCode();
+                hashCode = hashCode * 59 + this.BytesIn.GetHashCode();
+                hashCode = hashCode * 59 + this.BytesOut.GetHashCode();
+                hashCode = hashCode * 59 + this.ResponseCode.GetHashCode();
                 if (this.Data != null)
                     hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +169,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

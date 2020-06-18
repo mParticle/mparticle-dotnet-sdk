@@ -1,32 +1,25 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// GDPRConsentState
     /// </summary>
     [DataContract]
-    public partial class GDPRConsentState :  IEquatable<GDPRConsentState>, IValidatableObject
+    public partial class ConsentInstance : IEquatable<ConsentInstance>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GDPRConsentState" /> class.
+        /// Initializes a new instance of the <see cref="ConsentInstance" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected GDPRConsentState() { }
+        protected ConsentInstance() { }
         /// <summary>
-        /// Initializes a new instance of the <see cref="GDPRConsentState" /> class.
+        /// Initializes a new instance of the <see cref="ConsentInstance" /> class.
         /// </summary>
         /// <param name="regulation">regulation (required).</param>
         /// <param name="document">document (required).</param>
@@ -34,54 +27,50 @@ namespace mParticle.Sdk.Model
         /// <param name="timestampUnixtimeMs">timestampUnixtimeMs (required).</param>
         /// <param name="location">location (required).</param>
         /// <param name="hardwareId">hardwareId (required).</param>
-        public GDPRConsentState(string regulation = default(string), string document = default(string), bool consented = default(bool), int timestampUnixtimeMs = default(int), string location = default(string), string hardwareId = default(string))
+        public ConsentInstance(bool consented, string regulation = default(string), string document = default(string), long? timestampUnixtimeMs = null, string location = default(string), string hardwareId = default(string))
         {
-            // to ensure "regulation" is required (not null)
-            this.Regulation = regulation ?? throw new ArgumentNullException("regulation is a required property for GDPRConsentState and cannot be null");
-            // to ensure "document" is required (not null)
-            this.Document = document ?? throw new ArgumentNullException("document is a required property for GDPRConsentState and cannot be null");
             this.Consented = consented;
-            this.TimestampUnixtimeMs = timestampUnixtimeMs;
-            // to ensure "location" is required (not null)
-            this.Location = location ?? throw new ArgumentNullException("location is a required property for GDPRConsentState and cannot be null");
-            // to ensure "hardwareId" is required (not null)
-            this.HardwareId = hardwareId ?? throw new ArgumentNullException("hardwareId is a required property for GDPRConsentState and cannot be null");
+            this.Regulation = regulation;
+            this.Document = document;
+            this.TimestampUnixtimeMs = timestampUnixtimeMs ?? DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            this.Location = location;
+            this.HardwareId = hardwareId;
         }
-        
+
         /// <summary>
         /// Gets or Sets Regulation
         /// </summary>
-        [DataMember(Name="regulation", EmitDefaultValue=false)]
+        [DataMember(Name= "regulation", EmitDefaultValue= false)]
         public string Regulation { get; set; }
 
         /// <summary>
         /// Gets or Sets Document
         /// </summary>
-        [DataMember(Name="document", EmitDefaultValue=false)]
+        [DataMember(Name= "document", EmitDefaultValue= false)]
         public string Document { get; set; }
 
         /// <summary>
         /// Gets or Sets Consented
         /// </summary>
-        [DataMember(Name="consented", EmitDefaultValue=false)]
+        [DataMember(Name= "consented", EmitDefaultValue= true)]
         public bool Consented { get; set; }
 
         /// <summary>
         /// Gets or Sets TimestampUnixtimeMs
         /// </summary>
-        [DataMember(Name="timestamp_unixtime_ms", EmitDefaultValue=false)]
-        public int TimestampUnixtimeMs { get; set; }
+        [DataMember(Name= "timestamp_unixtime_ms", EmitDefaultValue= false)]
+        public long TimestampUnixtimeMs { get; set; }
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
-        [DataMember(Name="location", EmitDefaultValue=false)]
+        [DataMember(Name= "location", EmitDefaultValue= false)]
         public string Location { get; set; }
 
         /// <summary>
         /// Gets or Sets HardwareId
         /// </summary>
-        [DataMember(Name="hardware_id", EmitDefaultValue=false)]
+        [DataMember(Name= "hardware_id", EmitDefaultValue= false)]
         public string HardwareId { get; set; }
 
         /// <summary>
@@ -101,7 +90,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -118,7 +107,7 @@ namespace mParticle.Sdk.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as GDPRConsentState);
+            return this.Equals(input as ConsentInstance);
         }
 
         /// <summary>
@@ -126,35 +115,35 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="input">Instance of GDPRConsentState to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(GDPRConsentState input)
+        public bool Equals(ConsentInstance input)
         {
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Regulation == input.Regulation ||
                     (this.Regulation != null &&
                     this.Regulation.Equals(input.Regulation))
-                ) && 
+                ) &&
                 (
                     this.Document == input.Document ||
                     (this.Document != null &&
                     this.Document.Equals(input.Document))
-                ) && 
+                ) &&
                 (
                     this.Consented == input.Consented ||
                     this.Consented.Equals(input.Consented)
-                ) && 
+                ) &&
                 (
                     this.TimestampUnixtimeMs == input.TimestampUnixtimeMs ||
                     this.TimestampUnixtimeMs.Equals(input.TimestampUnixtimeMs)
-                ) && 
+                ) &&
                 (
                     this.Location == input.Location ||
                     (this.Location != null &&
                     this.Location.Equals(input.Location))
-                ) && 
+                ) &&
                 (
                     this.HardwareId == input.HardwareId ||
                     (this.HardwareId != null &&
@@ -190,7 +179,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

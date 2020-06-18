@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.PushRegistrationEventDataAllOf
+# mParticle.Model.PushRegistrationEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes

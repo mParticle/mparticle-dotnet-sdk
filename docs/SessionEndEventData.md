@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.SessionEndEventData
+# mParticle.Model.SessionEndEventData
 ## Properties
 
 Name | Type | Description | Notes

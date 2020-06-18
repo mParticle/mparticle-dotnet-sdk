@@ -1,176 +1,73 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using RestSharp;
 using RestSharp.Deserializers;
-using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 using RestSharpMethod = RestSharp.Method;
+using mParticle.Api;
+using System.Text;
 
-namespace mParticle.Sdk.Client
+namespace mParticle.Client
 {
-    /// <summary>
-    /// Allows RestSharp to Serialize/Deserialize JSON using our custom logic, but only when ContentType is JSON. 
-    /// </summary>
-    internal class CustomJsonCodec : RestSharp.Serializers.ISerializer, RestSharp.Deserializers.IDeserializer
-    {
-        private readonly IReadableConfiguration _configuration;
-        private static readonly string _contentType = "application/json";
-        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-        {
-            // OpenAPI generated types generally hide default constructors.
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy
-                {
-                    OverrideSpecifiedNames = true
-                }
-            }
-        };
 
-        public CustomJsonCodec(IReadableConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public CustomJsonCodec(JsonSerializerSettings serializerSettings, IReadableConfiguration configuration)
-        {
-            _serializerSettings = serializerSettings;
-            _configuration = configuration;
-        }
-
-        public string Serialize(object obj)
-        {
-            var result = JsonConvert.SerializeObject(obj, _serializerSettings);
-            return result;
-        }
-
-        public T Deserialize<T>(IRestResponse response)
-        {
-            var result = (T) Deserialize(response, typeof(T));
-            return result;
-        }
-
-        /// <summary>
-        /// Deserialize the JSON string into a proper object.
-        /// </summary>
-        /// <param name="response">The HTTP response.</param>
-        /// <param name="type">Object type.</param>
-        /// <returns>Object representation of the JSON string.</returns>
-        internal object Deserialize(IRestResponse response, Type type)
-        {
-            IList<Parameter> headers = response.Headers;
-            if (type == typeof(byte[])) // return byte array
-            {
-                return response.RawBytes;
-            }
-
-            // TODO: ? if (type.IsAssignableFrom(typeof(Stream)))
-            if (type == typeof(Stream))
-            {
-                if (headers != null)
-                {
-                    var filePath = String.IsNullOrEmpty(_configuration.TempFolderPath)
-                        ? Path.GetTempPath()
-                        : _configuration.TempFolderPath;
-                    var regex = new Regex(@"Content-Disposition=.*filename=['""]?([^'""\s]+)['""]?$");
-                    foreach (var header in headers)
-                    {
-                        var match = regex.Match(header.ToString());
-                        if (match.Success)
-                        {
-                            string fileName = filePath + ClientUtils.SanitizeFilename(match.Groups[1].Value.Replace("\"", "").Replace("'", ""));
-                            File.WriteAllBytes(fileName, response.RawBytes);
-                            return new FileStream(fileName, FileMode.Open);
-                        }
-                    }
-                }
-                var stream = new MemoryStream(response.RawBytes);
-                return stream;
-            }
-
-            if (type.Name.StartsWith("System.Nullable`1[[System.DateTime")) // return a datetime object
-            {
-                return DateTime.Parse(response.Content,  null, System.Globalization.DateTimeStyles.RoundtripKind);
-            }
-
-            if (type == typeof(String) || type.Name.StartsWith("System.Nullable")) // return primitive type
-            {
-                return Convert.ChangeType(response.Content, type);
-            }
-
-            // at this point, it must be a model (json)
-            try
-            {
-                return JsonConvert.DeserializeObject(response.Content, type, _serializerSettings);
-            }
-            catch (Exception e)
-            {
-                throw new ApiException(500, e.Message);
-            }
-        }
-
-        public string RootElement { get; set; }
-        public string Namespace { get; set; }
-        public string DateFormat { get; set; }
-
-        public string ContentType
-        {
-            get { return _contentType; }
-            set { throw new InvalidOperationException("Not allowed to set content type."); }
-        }
-    }
     /// <summary>
     /// Provides a default implementation of an Api client (both synchronous and asynchronous implementatios),
     /// encapsulating general REST accessor use cases.
     /// </summary>
-    public partial class ApiClient : ISynchronousClient, IAsynchronousClient
+    internal partial class ApiClient : ISynchronousClient, IAsynchronousClient
     {
-        private readonly String _baseUrl;
+        internal readonly IReadableConfiguration configuration;
 
         /// <summary>
         /// Allows for extending request processing for <see cref="ApiClient"/> generated code.
         /// </summary>
         /// <param name="request">The RestSharp request object</param>
-        partial void InterceptRequest(IRestRequest request);
+        void InterceptRequest(IRestRequest request)
+        {
+            var builder = new StringBuilder()
+                .AppendLine("Starting Request")
+                .AppendLine("\tType: " + request.Method.ToString())
+                .AppendLine("\tUrl: " + request.Resource);
+            if (request.Method == RestSharpMethod.POST)
+            {
+                builder.AppendLine("\tBody:\n" + request.JsonSerializer.Serialize(request.Parameters.Last().Value).ToPrettyJson(1));
+            }
+            Logger.Verbose(builder.ToString());
+        }
 
         /// <summary>
         /// Allows for extending response processing for <see cref="ApiClient"/> generated code.
         /// </summary>
         /// <param name="request">The RestSharp request object</param>
         /// <param name="response">The RestSharp response object</param>
-        partial void InterceptResponse(IRestRequest request, IRestResponse response);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiClient" />, defaulting to the global configurations' base url.
-        /// </summary>
-        public ApiClient()
+        void InterceptResponse(IRestRequest request, IRestResponse response)
         {
-            _baseUrl = mParticle.Sdk.Client.GlobalConfiguration.Instance.BasePath;
+            var builder = new StringBuilder()
+                .AppendLine("Finished Request")
+                .AppendLine("\tCode: " + response.StatusCode);
+            if (response.ErrorMessage != null && response.ErrorMessage.Length > 0)
+            {
+                builder.AppendLine("\tError: " + response.ErrorMessage);
+            }
+            if (response.Content != null && response.Content.Length > 0)
+            {
+                builder.AppendLine("\tMessage:\n" + response.Content.ToPrettyJson(1));
+            }
+            Logger.Verbose(builder.ToString());
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClient" />
         /// </summary>
-        /// <param name="basePath">The target service's base path in URL format.</param>
+        /// <param name="config">The Configuration object</param>
         /// <exception cref="ArgumentException"></exception>
-        public ApiClient(String basePath)
+        public ApiClient(IReadableConfiguration config)
         {
-            if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentException("basePath cannot be empty");
-
-            _baseUrl = basePath;
+            configuration = config;
+            Logger.Verbose("started");
         }
 
         /// <summary>
@@ -190,21 +87,6 @@ namespace mParticle.Sdk.Client
                 case HttpMethod.Post:
                     other = RestSharpMethod.POST;
                     break;
-                case HttpMethod.Put:
-                    other = RestSharpMethod.PUT;
-                    break;
-                case HttpMethod.Delete:
-                    other = RestSharpMethod.DELETE;
-                    break;
-                case HttpMethod.Head:
-                    other = RestSharpMethod.HEAD;
-                    break;
-                case HttpMethod.Options:
-                    other = RestSharpMethod.OPTIONS;
-                    break;
-                case HttpMethod.Patch:
-                    other = RestSharpMethod.PATCH;
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException("method", method, null);
             }
@@ -220,20 +102,19 @@ namespace mParticle.Sdk.Client
         /// <param name="method">The http verb.</param>
         /// <param name="path">The target path (or resource).</param>
         /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
         /// <returns>[private] A new RestRequest instance.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         private RestRequest NewRequest(
             HttpMethod method,
             String path,
-            RequestOptions options,
-            IReadableConfiguration configuration)
+            RequestOptions options)
         {
             if (path == null) throw new ArgumentNullException("path");
             if (options == null) throw new ArgumentNullException("options");
             if (configuration == null) throw new ArgumentNullException("configuration");
-            
+
+            options.HeaderParameters.Add("Authorization", getBasicAuthorization(configuration.ApiKey, configuration.ApiSecret));
+
             RestRequest request = new RestRequest(Method(method))
             {
                 Resource = path,
@@ -247,7 +128,7 @@ namespace mParticle.Sdk.Client
                     request.AddParameter(pathParam.Key, pathParam.Value, ParameterType.UrlSegment);
                 }
             }
-            
+
             if (options.QueryParameters != null)
             {
                 foreach (var queryParam in options.QueryParameters)
@@ -288,24 +169,7 @@ namespace mParticle.Sdk.Client
 
             if (options.Data != null)
             {
-                if (options.HeaderParameters != null)
-                {
-                    var contentTypes = options.HeaderParameters["Content-Type"];
-                    if (contentTypes == null || contentTypes.Any(header => header.Contains("application/json")))
-                    {
-                        request.RequestFormat = DataFormat.Json;
-                    }
-                    else
-                    {
-                        // TODO: Generated client user should add additional handlers. RestSharp only supports XML and JSON, with XML as default.
-                    }
-                }
-                else
-                {
-                    // Here, we'll assume JSON APIs are more common. XML can be forced by adding produces/consumes to openapi spec explicitly.
-                    request.RequestFormat = DataFormat.Json;
-                }
-
+                request.RequestFormat = DataFormat.Json;
                 request.AddJsonBody(options.Data);
             }
 
@@ -329,7 +193,7 @@ namespace mParticle.Sdk.Client
                     request.AddCookie(cookie.Name, cookie.Value);
                 }
             }
-            
+
             return request;
         }
 
@@ -343,7 +207,7 @@ namespace mParticle.Sdk.Client
                 ErrorText = response.ErrorMessage,
                 Cookies = new List<Cookie>()
             };
-            
+
             if (response.Headers != null)
             {
                 foreach (var responseHeader in response.Headers)
@@ -358,9 +222,9 @@ namespace mParticle.Sdk.Client
                 {
                     transformed.Cookies.Add(
                         new Cookie(
-                            responseCookies.Name, 
-                            responseCookies.Value, 
-                            responseCookies.Path, 
+                            responseCookies.Name,
+                            responseCookies.Value,
+                            responseCookies.Path,
                             responseCookies.Domain)
                         );
                 }
@@ -371,7 +235,7 @@ namespace mParticle.Sdk.Client
 
         private ApiResponse<T> Exec<T>(RestRequest req, IReadableConfiguration configuration)
         {
-            RestClient client = new RestClient(_baseUrl);
+            RestClient client = new RestClient(configuration.BasePath);
 
             client.ClearHandlers();
             var existingDeserializer = req.JsonSerializer as IDeserializer;
@@ -384,8 +248,6 @@ namespace mParticle.Sdk.Client
                 client.AddHandler(() => new CustomJsonCodec(configuration), "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
             }
 
-            client.AddHandler(() => new XmlDeserializer(), "application/xml", "text/xml", "*+xml", "*");
-
             client.Timeout = configuration.Timeout;
 
             if (configuration.UserAgent != null)
@@ -397,6 +259,7 @@ namespace mParticle.Sdk.Client
             {
                 client.ClientCertificates = configuration.ClientCertificates;
             }
+
 
             InterceptRequest(req);
 
@@ -412,7 +275,7 @@ namespace mParticle.Sdk.Client
 
             if (response.Cookies != null && response.Cookies.Count > 0)
             {
-                if(result.Cookies == null) result.Cookies = new List<Cookie>();
+                if (result.Cookies == null) result.Cookies = new List<Cookie>();
                 foreach (var restResponseCookie in response.Cookies)
                 {
                     var cookie = new Cookie(
@@ -441,7 +304,7 @@ namespace mParticle.Sdk.Client
 
         private async Task<ApiResponse<T>> ExecAsync<T>(RestRequest req, IReadableConfiguration configuration)
         {
-            RestClient client = new RestClient(_baseUrl);
+            RestClient client = new RestClient(configuration.BasePath);
 
             client.ClearHandlers();
             var existingDeserializer = req.JsonSerializer as IDeserializer;
@@ -453,8 +316,6 @@ namespace mParticle.Sdk.Client
             {
                 client.AddHandler(() => new CustomJsonCodec(configuration), "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
             }
-
-            client.AddHandler(() => new XmlDeserializer(), "application/xml", "text/xml", "*+xml", "*");
 
             client.Timeout = configuration.Timeout;
 
@@ -482,7 +343,7 @@ namespace mParticle.Sdk.Client
 
             if (response.Cookies != null && response.Cookies.Count > 0)
             {
-                if(result.Cookies == null) result.Cookies = new List<Cookie>();
+                if (result.Cookies == null) result.Cookies = new List<Cookie>();
                 foreach (var restResponseCookie in response.Cookies)
                 {
                     var cookie = new Cookie(
@@ -509,19 +370,24 @@ namespace mParticle.Sdk.Client
             return result;
         }
 
+        private string getBasicAuthorization(string userName, string password)
+        {
+            string usernameAndPassword = userName + ":" + password;
+            byte[] bytes = Encoding.ASCII.GetBytes(usernameAndPassword);
+            String encoded = Convert.ToBase64String(bytes);
+            return "Basic " + encoded;
+        }
+
         #region IAsynchronousClient
         /// <summary>
         /// Make a HTTP GET request (async).
         /// </summary>
         /// <param name="path">The target path (or resource).</param>
         /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> GetAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
+        public Task<ApiResponse<T>> GetAsync<T>(string path, RequestOptions options)
         {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Get, path, options, config), config);
+            return ExecAsync<T>(NewRequest(HttpMethod.Get, path, options), configuration);
         }
 
         /// <summary>
@@ -529,83 +395,10 @@ namespace mParticle.Sdk.Client
         /// </summary>
         /// <param name="path">The target path (or resource).</param>
         /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PostAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
+        ///<returns>A Task containing ApiResponse</returns>
+        public Task<ApiResponse<T>> PostAsync<T>(string path, RequestOptions options)
         {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Post, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP PUT request (async).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PutAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Put, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP DELETE request (async).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> DeleteAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Delete, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP HEAD request (async).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> HeadAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Head, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP OPTION request (async).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> OptionsAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Options, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP PATCH request (async).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PatchAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest(HttpMethod.Patch, path, options, config), config);
+            return ExecAsync<T>(NewRequest(HttpMethod.Post, path, options), configuration);
         }
         #endregion IAsynchronousClient
 
@@ -615,13 +408,10 @@ namespace mParticle.Sdk.Client
         /// </summary>
         /// <param name="path">The target path (or resource).</param>
         /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Get<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
+        ///<returns>A Task containing ApiResponse</returns>
+        public ApiResponse<T> Get<T>(string path, RequestOptions options)
         {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Get, path, options, config), config);
+            return Exec<T>(NewRequest(HttpMethod.Get, path, options), configuration);
         }
 
         /// <summary>
@@ -629,83 +419,10 @@ namespace mParticle.Sdk.Client
         /// </summary>
         /// <param name="path">The target path (or resource).</param>
         /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Post<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
+        ///<returns>A Task containing ApiResponse</returns>
+        public ApiResponse<T> Post<T>(string path, RequestOptions options)
         {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Post, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP PUT request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Put<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Put, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP DELETE request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Delete<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Delete, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP HEAD request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Head<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Head, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP OPTION request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Options<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Options, path, options, config), config);
-        }
-
-        /// <summary>
-        /// Make a HTTP PATCH request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Patch<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            var config = configuration ?? GlobalConfiguration.Instance;
-            return Exec<T>(NewRequest(HttpMethod.Patch, path, options, config), config);
+            return Exec<T>(NewRequest(HttpMethod.Post, path, options), configuration);
         }
         #endregion ISynchronousClient
     }

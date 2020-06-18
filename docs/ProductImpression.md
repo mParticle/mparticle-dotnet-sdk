@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ProductImpression
+# mParticle.Model.ProductImpression
 ## Properties
 
 Name | Type | Description | Notes

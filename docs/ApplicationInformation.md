@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ApplicationInformation
+# mParticle.Model.ApplicationInformation
 ## Properties
 
 Name | Type | Description | Notes

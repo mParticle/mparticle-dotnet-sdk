@@ -3,27 +3,29 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>mParticle.Sdk</AssemblyName>
+    <AssemblyName>mParticle</AssemblyName>
     <PackageId>mParticle.Sdk</PackageId>
     <OutputType>Library</OutputType>
-    <Authors>OpenAPI</Authors>
-    <Company>OpenAPI</Company>
-    <AssemblyTitle>OpenAPI Library</AssemblyTitle>
-    <Description>A library generated from a OpenAPI doc</Description>
-    <Copyright>No Copyright</Copyright>
-    <RootNamespace>mParticle.Sdk</RootNamespace>
+    <Authors>MParticle</Authors>
+    <Owner>MParticle</Owner>
+    <Description>MParticle Dotnet SDK</Description>
+    <RootNamespace>mParticle</RootNamespace>
     <Version>1.0.0</Version>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\mParticle.Sdk.xml</DocumentationFile>
-    <RepositoryUrl>https://github.com/GIT_USER_ID/GIT_REPO_ID.git</RepositoryUrl>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\mParticle.xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/mParticle/dotnet-sdk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Minor update</PackageReleaseNotes>
+    <PackageTags>cdp, MParticle</PackageTags>
+    <license>Apache-2.0</license>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="JsonSubTypes" Version="1.5.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>mParticle.Test</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

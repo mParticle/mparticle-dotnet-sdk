@@ -1,60 +1,40 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using EventTypeEnum = mParticle.Model.EventType;
+using System.Linq;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// BreadcrumbEvent
     /// </summary>
     [DataContract]
-    public partial class BreadcrumbEvent :  IEquatable<BreadcrumbEvent>, IValidatableObject
+    public partial class BreadcrumbEvent : BaseEvent, IEquatable<BreadcrumbEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Breadcrumb for value: breadcrumb
-            /// </summary>
-            [EnumMember(Value = "breadcrumb")]
-            Breadcrumb = 1
 
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="BreadcrumbEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Breadcrumb).</param>
-        public BreadcrumbEvent(BreadcrumbEventData data = default(BreadcrumbEventData), EventTypeEnum? eventType = EventTypeEnum.Breadcrumb)
+        /// <param name="label">label (required).</param>
+        public BreadcrumbEvent(string label) : base(EventTypeEnum.Breadcrumb)
         {
-            this.Data = data;
-            this.EventType = eventType;
+            Label = label ?? throw new ArgumentNullException("label is a required property for BreadcrumbEventData and cannot be null");
         }
-        
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets SessionNumber
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public BreadcrumbEventData Data { get; set; }
+        [DataMember(Name = "session_number", EmitDefaultValue = false)]
+        public int SessionNumber { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Label
+        /// </summary>
+        [DataMember(Name = "label", EmitDefaultValue = false)]
+        public string Label { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,21 +44,13 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class BreadcrumbEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  SessionNumber: ").Append(SessionNumber).Append("\n");
+            sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
   
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
         /// <summary>
         /// Returns true if objects are equal
         /// </summary>
@@ -99,15 +71,15 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.Label == input.Label ||
+                    (this.Label != null &&
+                    this.Label.Equals(input.Label))
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.SessionNumber == input.SessionNumber
                 );
         }
 
@@ -120,9 +92,9 @@ namespace mParticle.Sdk.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                if (this.Label != null)
+                    hashCode = hashCode * 59 + this.Label.GetHashCode();
+                hashCode = hashCode * 59 + this.SessionNumber.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +104,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

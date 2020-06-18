@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.BatchUserIdentities
+# mParticle.Model.BatchUserIdentities
 ## Properties
 
 Name | Type | Description | Notes

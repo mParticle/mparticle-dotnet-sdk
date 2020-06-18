@@ -10,51 +10,62 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using OpenAPIDateConverter = mParticle.Client.OpenAPIDateConverter;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ApplicationStateTransitionEvent
     /// </summary>
     [DataContract]
-    public partial class ApplicationStateTransitionEvent :  IEquatable<ApplicationStateTransitionEvent>, IValidatableObject
+    public partial class ApplicationStateTransitionEvent : BaseEvent, IEquatable<ApplicationStateTransitionEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Applicationstatetransition for value: application_state_transition
-            /// </summary>
-            [EnumMember(Value = "application_state_transition")]
-            Applicationstatetransition = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationStateTransitionEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Applicationstatetransition).</param>
-        public ApplicationStateTransitionEvent(ApplicationStateTransitionEventData data = default(ApplicationStateTransitionEventData), EventTypeEnum? eventType = EventTypeEnum.Applicationstatetransition)
+        public ApplicationStateTransitionEvent(): base(EventTypeEnum.Applicationstatetransition)
         {
-            this.Data = data;
-            this.EventType = eventType;
-        }
         
+        }
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets ApplicationTransitionType
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public ApplicationStateTransitionEventData Data { get; set; }
+        [DataMember(Name = "application_transition_type", EmitDefaultValue = false)]
+        public ApplicationTransitionTypeEnum ApplicationTransitionType { get; set; }
+
+
+        /// <summary>
+        /// Gets or Sets SuccessfullyClosed
+        /// </summary>
+        [DataMember(Name = "successfully_closed", EmitDefaultValue = false)]
+        public bool SuccessfullyClosed { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsFirstRun
+        /// </summary>
+        [DataMember(Name = "is_first_run", EmitDefaultValue = false)]
+        public bool IsFirstRun { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsUpgrade
+        /// </summary>
+        [DataMember(Name = "is_upgrade", EmitDefaultValue = false)]
+        public bool IsUpgrade { get; set; }
+
+        /// <summary>
+        /// Gets or Sets PushNotificationPayload
+        /// </summary>
+        [DataMember(Name = "push_notification_payload", EmitDefaultValue = false)]
+        public string PushNotificationPayload { get; set; }
+
+        /// <summary>
+        /// Gets or Sets LaunchReferral
+        /// </summary>
+        [DataMember(Name = "launch_referral", EmitDefaultValue = false)]
+        public string LaunchReferral { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +75,15 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class ApplicationStateTransitionEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  SuccessfullyClosed: ").Append(SuccessfullyClosed).Append("\n");
+            sb.Append("  IsFirstRun: ").Append(IsFirstRun).Append("\n");
+            sb.Append("  IsUpgrade: ").Append(IsUpgrade).Append("\n");
+            sb.Append("  PushNotificationPayload: ").Append(PushNotificationPayload).Append("\n");
+            sb.Append("  LaunchReferral: ").Append(LaunchReferral).Append("\n");
+            sb.Append("  ApplicationTransitionType: ").Append(ApplicationTransitionType).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +106,33 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.SuccessfullyClosed == input.SuccessfullyClosed ||
+                    this.SuccessfullyClosed.Equals(input.SuccessfullyClosed)
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.IsFirstRun == input.IsFirstRun ||
+                    this.IsFirstRun.Equals(input.IsFirstRun)
+                ) &&
+                (
+                    this.IsUpgrade == input.IsUpgrade ||
+                    this.IsUpgrade.Equals(input.IsUpgrade)
+                ) &&
+                (
+                    this.PushNotificationPayload == input.PushNotificationPayload ||
+                    (this.PushNotificationPayload != null &&
+                    this.PushNotificationPayload.Equals(input.PushNotificationPayload))
+                ) &&
+                (
+                    this.LaunchReferral == input.LaunchReferral ||
+                    (this.LaunchReferral != null &&
+                    this.LaunchReferral.Equals(input.LaunchReferral))
+                ) &&
+                (
+                    this.ApplicationTransitionType == input.ApplicationTransitionType ||
+                    this.ApplicationTransitionType.Equals(input.ApplicationTransitionType)
                 );
         }
 
@@ -119,10 +144,14 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                hashCode = hashCode * 59 + this.SuccessfullyClosed.GetHashCode();
+                hashCode = hashCode * 59 + this.IsFirstRun.GetHashCode();
+                hashCode = hashCode * 59 + this.IsUpgrade.GetHashCode();
+                if (this.PushNotificationPayload != null)
+                    hashCode = hashCode * 59 + this.PushNotificationPayload.GetHashCode();
+                if (this.LaunchReferral != null)
+                    hashCode = hashCode * 59 + this.LaunchReferral.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,9 +161,41 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
+        }
+
+        /// <summary>
+        /// Defines ApplicationTransitionType
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum ApplicationTransitionTypeEnum
+        {
+            /// <summary>
+            /// Enum Initialized for value: application_initialized
+            /// </summary>
+            [EnumMember(Value = "application_initialized")]
+            Initialized = 1,
+
+            /// <summary>
+            /// Enum Exit for value: application_exit
+            /// </summary>
+            [EnumMember(Value = "application_exit")]
+            Exit = 2,
+
+            /// <summary>
+            /// Enum Background for value: application_background
+            /// </summary>
+            [EnumMember(Value = "application_background")]
+            Background = 3,
+
+            /// <summary>
+            /// Enum Foreground for value: application_foreground
+            /// </summary>
+            [EnumMember(Value = "application_foreground")]
+            Foreground = 4
+
         }
     }
 

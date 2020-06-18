@@ -1,24 +1,19 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ShoppingCart
     /// </summary>
     [DataContract]
-    public partial class ShoppingCart :  IEquatable<ShoppingCart>, IValidatableObject
+    public partial class ShoppingCart : IEquatable<ShoppingCart>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ShoppingCart" /> class.
@@ -29,16 +24,16 @@ namespace mParticle.Sdk.Model
         /// Initializes a new instance of the <see cref="ShoppingCart" /> class.
         /// </summary>
         /// <param name="products">products (required).</param>
-        public ShoppingCart(Collection<Product> products = default(Collection<Product>))
+        public ShoppingCart(Collection<Product> products)
         {
             // to ensure "products" is required (not null)
             this.Products = products ?? throw new ArgumentNullException("products is a required property for ShoppingCart and cannot be null");
         }
-        
+
         /// <summary>
         /// Gets or Sets Products
         /// </summary>
-        [DataMember(Name="products", EmitDefaultValue=false)]
+        [DataMember(Name= "products", EmitDefaultValue= false)]
         public Collection<Product> Products { get; set; }
 
         /// <summary>
@@ -53,7 +48,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -83,7 +78,7 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.Products == input.Products ||
                     this.Products != null &&
@@ -112,7 +107,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

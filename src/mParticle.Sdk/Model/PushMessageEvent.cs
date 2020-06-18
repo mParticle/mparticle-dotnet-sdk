@@ -1,60 +1,81 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// PushMessageEvent
     /// </summary>
     [DataContract]
-    public partial class PushMessageEvent :  IEquatable<PushMessageEvent>, IValidatableObject
+    public partial class PushMessageEvent : BaseEvent, IEquatable<PushMessageEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Pushmessage for value: push_message
-            /// </summary>
-            [EnumMember(Value = "push_message")]
-            Pushmessage = 1
 
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="PushMessageEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Pushmessage).</param>
-        public PushMessageEvent(PushMessageEventData data = default(PushMessageEventData), EventTypeEnum? eventType = EventTypeEnum.Pushmessage)
+        /// <param name="pushMessageToken">the push message token.</param>
+        /// <param name="pushNotificationPayload">the push payload.</param>
+        public PushMessageEvent(string pushMessageToken, string pushNotificationPayload) : base(EventTypeEnum.Pushmessage)
         {
-            this.Data = data;
-            this.EventType = eventType;
+            this.PushMessageToken = pushMessageToken ?? throw new ArgumentNullException("pushMessageToken is a required property for PushMessageEventData and cannot be null");
+            this.PushNotificationPayload = pushNotificationPayload ?? throw new ArgumentNullException("pushNotificationPayload is a required property for PushMessageEventData and cannot be null");
         }
-        
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets PushMessageToken
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public PushMessageEventData Data { get; set; }
+        [DataMember(Name = "push_message_token", EmitDefaultValue = false)]
+        public string PushMessageToken { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Message
+        /// </summary>
+        [DataMember(Name = "message", EmitDefaultValue = false)]
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Network
+        /// </summary>
+        [DataMember(Name = "network", EmitDefaultValue = false)]
+        public string Network { get; set; }
+
+        /// <summary>
+        /// Gets or Sets PushNotificationPayload
+        /// </summary>
+        [DataMember(Name = "push_notification_payload", EmitDefaultValue = false)]
+        public string PushNotificationPayload { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ActionIdentifier
+        /// </summary>
+        [DataMember(Name = "action_identifier", EmitDefaultValue = false)]
+        public string ActionIdentifier { get; set; }
+
+        /// <summary>
+        /// Gets or Sets PushMessageType
+        /// </summary>
+        [DataMember(Name = "push_message_type", EmitDefaultValue = false)]
+        public PushMessageTypeEnum PushMessageType { get; set; }
+
+
+        /// <summary>
+        /// Gets or Sets ApplicationState
+        /// </summary>
+        [DataMember(Name = "application_state", EmitDefaultValue = false)]
+        public ApplicationStateEnum? ApplicationState { get; set; }
+
+        /// <summary>
+        /// Gets or Sets PushMessageBehavior
+        /// </summary>
+        [DataMember(Name = "push_message_behavior", EmitDefaultValue = false)]
+        public PushMessageBehaviorEnum? PushMessageBehavior { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +85,17 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class PushMessageEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  PushMessageToken: ").Append(PushMessageToken).Append("\n");
+            sb.Append("  PushMessageType: ").Append(PushMessageType).Append("\n");
+            sb.Append("  Message: ").Append(Message).Append("\n");
+            sb.Append("  Network: ").Append(Network).Append("\n");
+            sb.Append("  PushNotificationPayload: ").Append(PushNotificationPayload).Append("\n");
+            sb.Append("  ApplicationState: ").Append(ApplicationState).Append("\n");
+            sb.Append("  ActionIdentifier: ").Append(ActionIdentifier).Append("\n");
+            sb.Append("  PushMessageBehavior: ").Append(PushMessageBehavior).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +118,44 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.PushMessageToken == input.PushMessageToken ||
+                    (this.PushMessageToken != null &&
+                    this.PushMessageToken.Equals(input.PushMessageToken))
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.PushMessageType == input.PushMessageType ||
+                    this.PushMessageType.Equals(input.PushMessageType)
+                ) &&
+                (
+                    this.Message == input.Message ||
+                    (this.Message != null &&
+                    this.Message.Equals(input.Message))
+                ) &&
+                (
+                    this.Network == input.Network ||
+                    (this.Network != null &&
+                    this.Network.Equals(input.Network))
+                ) &&
+                (
+                    this.PushNotificationPayload == input.PushNotificationPayload ||
+                    (this.PushNotificationPayload != null &&
+                    this.PushNotificationPayload.Equals(input.PushNotificationPayload))
+                ) &&
+                (
+                    this.ApplicationState == input.ApplicationState ||
+                    this.ApplicationState.Equals(input.ApplicationState)
+                ) &&
+                (
+                    this.ActionIdentifier == input.ActionIdentifier ||
+                    (this.ActionIdentifier != null &&
+                    this.ActionIdentifier.Equals(input.ActionIdentifier))
+                ) &&
+                (
+                    this.PushMessageBehavior == input.PushMessageBehavior ||
+                    this.PushMessageBehavior.Equals(input.PushMessageBehavior)
                 );
         }
 
@@ -119,10 +167,20 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                if (this.PushMessageToken != null)
+                    hashCode = hashCode * 59 + this.PushMessageToken.GetHashCode();
+                hashCode = hashCode * 59 + this.PushMessageType.GetHashCode();
+                if (this.Message != null)
+                    hashCode = hashCode * 59 + this.Message.GetHashCode();
+                if (this.Network != null)
+                    hashCode = hashCode * 59 + this.Network.GetHashCode();
+                if (this.PushNotificationPayload != null)
+                    hashCode = hashCode * 59 + this.PushNotificationPayload.GetHashCode();
+                hashCode = hashCode * 59 + this.ApplicationState.GetHashCode();
+                if (this.ActionIdentifier != null)
+                    hashCode = hashCode * 59 + this.ActionIdentifier.GetHashCode();
+                hashCode = hashCode * 59 + this.PushMessageBehavior.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,9 +190,99 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
+        }
+
+        /// <summary>
+        /// Defines PushMessageType
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum PushMessageTypeEnum
+        {
+            /// <summary>
+            /// Enum Sent for value: sent
+            /// </summary>
+            [EnumMember(Value = "sent")]
+            Sent = 1,
+
+            /// <summary>
+            /// Enum Received for value: received
+            /// </summary>
+            [EnumMember(Value = "received")]
+            Received = 2,
+
+            /// <summary>
+            /// Enum Action for value: action
+            /// </summary>
+            [EnumMember(Value = "action")]
+            Action = 3
+
+        }
+
+        /// <summary>
+        /// Defines ApplicationState
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum ApplicationStateEnum
+        {
+            /// <summary>
+            /// Enum Notrunning for value: not_running
+            /// </summary>
+            [EnumMember(Value = "not_running")]
+            Notrunning = 1,
+
+            /// <summary>
+            /// Enum Background for value: background
+            /// </summary>
+            [EnumMember(Value = "background")]
+            Background = 2,
+
+            /// <summary>
+            /// Enum Foreground for value: foreground
+            /// </summary>
+            [EnumMember(Value = "foreground")]
+            Foreground = 3
+
+        }
+
+        /// <summary>
+        /// Defines PushMessageBehavior
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum PushMessageBehaviorEnum
+        {
+            /// <summary>
+            /// Enum Received for value: Received
+            /// </summary>
+            [EnumMember(Value = "Received")]
+            Received = 1,
+
+            /// <summary>
+            /// Enum DirectOpen for value: DirectOpen
+            /// </summary>
+            [EnumMember(Value = "DirectOpen")]
+            DirectOpen = 2,
+
+            /// <summary>
+            /// Enum Read for value: Read
+            /// </summary>
+            [EnumMember(Value = "Read")]
+            Read = 3,
+
+            /// <summary>
+            /// Enum InfluencedOpen for value: InfluencedOpen
+            /// </summary>
+            [EnumMember(Value = "InfluencedOpen")]
+            InfluencedOpen = 4,
+
+            /// <summary>
+            /// Enum Displayed for value: Displayed
+            /// </summary>
+            [EnumMember(Value = "Displayed")]
+            Displayed = 5
+
         }
     }
 

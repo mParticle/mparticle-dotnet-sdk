@@ -1,60 +1,39 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ScreenViewEvent
     /// </summary>
     [DataContract]
-    public partial class ScreenViewEvent :  IEquatable<ScreenViewEvent>, IValidatableObject
+    public partial class ScreenViewEvent : BaseEvent, IEquatable<ScreenViewEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Screenview for value: screen_view
-            /// </summary>
-            [EnumMember(Value = "screen_view")]
-            Screenview = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ScreenViewEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Screenview).</param>
-        public ScreenViewEvent(ScreenViewEventData data = default(ScreenViewEventData), EventTypeEnum? eventType = EventTypeEnum.Screenview)
+        public ScreenViewEvent(string screenName): base(EventTypeEnum.Screenview) 
         {
-            this.Data = data;
-            this.EventType = eventType;
+            this.ScreenName = screenName ?? throw new ArgumentNullException("screenName is a required property for ScreenViewEventData and cannot be null");
         }
-        
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets ScreenName
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public ScreenViewEventData Data { get; set; }
+        [DataMember(Name = "screen_name", EmitDefaultValue = false)]
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ActivityType
+        /// </summary>
+        [DataMember(Name = "activity_type", EmitDefaultValue = false)]
+        public string ActivityType { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +43,11 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class ScreenViewEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  ScreenName: ").Append(ScreenName).Append("\n");
+            sb.Append("  ActivityType: ").Append(ActivityType).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +70,17 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.ScreenName == input.ScreenName ||
+                    (this.ScreenName != null &&
+                    this.ScreenName.Equals(input.ScreenName))
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.ActivityType == input.ActivityType ||
+                    (this.ActivityType != null &&
+                    this.ActivityType.Equals(input.ActivityType))
                 );
         }
 
@@ -119,10 +92,11 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                if (this.ScreenName != null)
+                    hashCode = hashCode * 59 + this.ScreenName.GetHashCode();
+                if (this.ActivityType != null)
+                    hashCode = hashCode * 59 + this.ActivityType.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +106,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

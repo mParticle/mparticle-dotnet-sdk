@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ApiErrorResponse
+# mParticle.Model.ApiErrorResponse
 ## Properties
 
 Name | Type | Description | Notes

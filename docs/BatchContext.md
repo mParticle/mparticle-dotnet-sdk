@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.BatchContext
+# mParticle.Model.BatchContext
 ## Properties
 
 Name | Type | Description | Notes

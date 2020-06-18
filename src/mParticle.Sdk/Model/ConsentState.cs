@@ -1,18 +1,11 @@
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// ConsentState
@@ -20,26 +13,56 @@ namespace mParticle.Sdk.Model
     [DataContract]
     public partial class ConsentState :  IEquatable<ConsentState>, IValidatableObject
     {
+        const string CCPA_KEY = "data_sale_opt_out";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsentState" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected ConsentState() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConsentState" /> class.
-        /// </summary>
-        /// <param name="gdpr">gdpr (required).</param>
-        public ConsentState(GDPRConsentState gdpr = default(GDPRConsentState))
+        public ConsentState(Dictionary<string, ConsentInstance> gdprConsentState = default(Dictionary<string, ConsentInstance>), ConsentInstance ccpaConsentInstance = default(ConsentInstance))
         {
-            // to ensure "gdpr" is required (not null)
-            this.Gdpr = gdpr ?? throw new ArgumentNullException("gdpr is a required property for ConsentState and cannot be null");
+            GdprConsentState = gdprConsentState ?? new Dictionary<string, ConsentInstance>();
+            if (ccpaConsentInstance != null)
+            {
+                Ccpa = ccpaConsentInstance;
+            }
         }
         
         /// <summary>
-        /// Gets or Sets Gdpr
+        /// Gets the GDPR consent instance dictionary
         /// </summary>
         [DataMember(Name="gdpr", EmitDefaultValue=false)]
-        public GDPRConsentState Gdpr { get; set; }
+        public Dictionary<string, ConsentInstance> GdprConsentState { get; set; }
+
+        
+        [DataMember(Name = "ccpa", EmitDefaultValue = false)]
+        internal Dictionary<string, ConsentInstance> CcpaConsentState { get; set; }
+
+        /// <summary>
+        /// Gets or sets the CCPA consent instance
+        /// </summary>
+        public ConsentInstance Ccpa
+        {
+            get
+            {
+                if (CcpaConsentState != null && CcpaConsentState.Count == 1)
+                {
+                    return CcpaConsentState[CCPA_KEY];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            set
+            {
+                CcpaConsentState = new Dictionary<string, ConsentInstance>()
+                {
+                    { CCPA_KEY, value }
+                };
+            }
+        }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -49,7 +72,8 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class ConsentState {\n");
-            sb.Append("  Gdpr: ").Append(Gdpr).Append("\n");
+            sb.Append("  Gdpr: ").Append(GdprConsentState).Append("\n");
+            sb.Append("  Ccpa: ").Append(CcpaConsentState).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -85,9 +109,9 @@ namespace mParticle.Sdk.Model
 
             return 
                 (
-                    this.Gdpr == input.Gdpr ||
-                    (this.Gdpr != null &&
-                    this.Gdpr.Equals(input.Gdpr))
+                    this.GdprConsentState == input.GdprConsentState ||
+                    (this.GdprConsentState != null &&
+                    this.GdprConsentState.Equals(input.GdprConsentState))
                 );
         }
 
@@ -100,8 +124,8 @@ namespace mParticle.Sdk.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Gdpr != null)
-                    hashCode = hashCode * 59 + this.Gdpr.GetHashCode();
+                if (this.GdprConsentState != null)
+                    hashCode = hashCode * 59 + this.GdprConsentState.GetHashCode();
                 return hashCode;
             }
         }
@@ -111,7 +135,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

@@ -1,60 +1,30 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// SessionEndEvent
     /// </summary>
     [DataContract]
-    public partial class SessionEndEvent :  IEquatable<SessionEndEvent>, IValidatableObject
+    public partial class SessionEndEvent : BaseEvent, IEquatable<SessionEndEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Sessionend for value: session_end
-            /// </summary>
-            [EnumMember(Value = "session_end")]
-            Sessionend = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+       
         /// <summary>
         /// Initializes a new instance of the <see cref="SessionEndEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Sessionend).</param>
-        public SessionEndEvent(SessionEndEventData data = default(SessionEndEventData), EventTypeEnum? eventType = EventTypeEnum.Sessionend)
-        {
-            this.Data = data;
-            this.EventType = eventType;
-        }
-        
+        public SessionEndEvent(): base(EventTypeEnum.Sessionend)
+        {}
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets SessionDurationMs
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public SessionEndEventData Data { get; set; }
+        [DataMember(Name = "session_duration_ms", EmitDefaultValue = false)]
+        public int SessionDurationMs { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,21 +34,12 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class SessionEndEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  SessionDurationMs: ").Append(SessionDurationMs).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
   
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
         /// <summary>
         /// Returns true if objects are equal
         /// </summary>
@@ -99,15 +60,10 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
-                (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
-                (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+            return
+                base.Equals(input) && (
+                    this.SessionDurationMs == input.SessionDurationMs ||
+                    this.SessionDurationMs.Equals(input.SessionDurationMs)
                 );
         }
 
@@ -119,10 +75,8 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                hashCode = hashCode * 59 + this.SessionDurationMs.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +86,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.GeoLocation
+# mParticle.Model.GeoLocation
 ## Properties
 
 Name | Type | Description | Notes

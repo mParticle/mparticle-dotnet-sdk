@@ -1,60 +1,65 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// UserAttributeChangeEvent
     /// </summary>
     [DataContract]
-    public partial class UserAttributeChangeEvent :  IEquatable<UserAttributeChangeEvent>, IValidatableObject
+    public partial class UserAttributeChangeEvent : BaseEvent, IEquatable<UserAttributeChangeEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Userattributechange for value: user_attribute_change
-            /// </summary>
-            [EnumMember(Value = "user_attribute_change")]
-            Userattributechange = 1
 
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="UserAttributeChangeEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Userattributechange).</param>
-        public UserAttributeChangeEvent(UserAttributeChangeEventData data = default(UserAttributeChangeEventData), EventTypeEnum? eventType = EventTypeEnum.Userattributechange)
+        /// <param name="userAttributeName">the name of the user attribute.</param>
+        /// <param name="_new">the new value of the user attribute.</param>
+        /// <param name="old">the old value of the user attribute.</param>
+        public UserAttributeChangeEvent(string userAttributeName, object _new, object old): base(EventTypeEnum.Userattributechange)
         {
-            this.Data = data;
-            this.EventType = eventType;
+            // to ensure "userAttributeName" is required (not null)
+            this.UserAttributeName = userAttributeName ?? throw new ArgumentNullException("userAttributeName is a required property for UserAttributeChangeEventData and cannot be null");
+            // to ensure "_new" is required (not null)
+            this.New = _new ?? throw new ArgumentNullException("_new is a required property for UserAttributeChangeEventData and cannot be null");
+            // to ensure "old" is required (not null)
+            this.Old = old ?? throw new ArgumentNullException("old is a required property for UserAttributeChangeEventData and cannot be null");
         }
-        
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets UserAttributeName
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public UserAttributeChangeEventData Data { get; set; }
+        [DataMember(Name = "user_attribute_name", EmitDefaultValue = false)]
+        public string UserAttributeName { get; set; }
+
+        /// <summary>
+        /// Gets or Sets New
+        /// </summary>
+        [DataMember(Name = "new", EmitDefaultValue = false)]
+        public Object New { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Old
+        /// </summary>
+        [DataMember(Name = "old", EmitDefaultValue = false)]
+        public Object Old { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Deleted
+        /// </summary>
+        [DataMember(Name = "deleted", EmitDefaultValue = false)]
+        public bool Deleted { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsNewAttribute
+        /// </summary>
+        [DataMember(Name = "is_new_attribute", EmitDefaultValue = false)]
+        public bool IsNewAttribute { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +69,14 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class UserAttributeChangeEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  UserAttributeName: ").Append(UserAttributeName).Append("\n");
+            sb.Append("  New: ").Append(New).Append("\n");
+            sb.Append("  Old: ").Append(Old).Append("\n");
+            sb.Append("  Deleted: ").Append(Deleted).Append("\n");
+            sb.Append("  IsNewAttribute: ").Append(IsNewAttribute).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +99,29 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) && (
+                    this.UserAttributeName == input.UserAttributeName ||
+                    (this.UserAttributeName != null &&
+                    this.UserAttributeName.Equals(input.UserAttributeName))
+                ) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
+                    this.New == input.New ||
+                    (this.New != null &&
+                    this.New.Equals(input.New))
+                ) &&
                 (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.Old == input.Old ||
+                    (this.Old != null &&
+                    this.Old.Equals(input.Old))
+                ) &&
+                (
+                    this.Deleted == input.Deleted ||
+                    this.Deleted.Equals(input.Deleted)
+                ) &&
+                (
+                    this.IsNewAttribute == input.IsNewAttribute ||
+                    this.IsNewAttribute.Equals(input.IsNewAttribute)
                 );
         }
 
@@ -119,10 +133,15 @@ namespace mParticle.Sdk.Model
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                int hashCode = base.GetHashCode();
+                if (this.UserAttributeName != null)
+                    hashCode = hashCode * 59 + this.UserAttributeName.GetHashCode();
+                if (this.New != null)
+                    hashCode = hashCode * 59 + this.New.GetHashCode();
+                if (this.Old != null)
+                    hashCode = hashCode * 59 + this.Old.GetHashCode();
+                hashCode = hashCode * 59 + this.Deleted.GetHashCode();
+                hashCode = hashCode * 59 + this.IsNewAttribute.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +151,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

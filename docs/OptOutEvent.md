@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.OptOutEvent
+# mParticle.Model.OptOutEvent
 ## Properties
 
 Name | Type | Description | Notes

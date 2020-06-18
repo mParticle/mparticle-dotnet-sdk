@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.ConsentState
+# mParticle.Model.ConsentState
 ## Properties
 
 Name | Type | Description | Notes

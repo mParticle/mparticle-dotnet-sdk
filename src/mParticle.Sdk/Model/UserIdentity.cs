@@ -1,29 +1,22 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// UserIdentity
     /// </summary>
     [DataContract]
-    public partial class UserIdentity :  IEquatable<UserIdentity>, IValidatableObject
+    public partial class UserIdentity : IEquatable<UserIdentity>, IValidatableObject
     {
         /// <summary>
         /// Gets or Sets IdentityType
         /// </summary>
-        [DataMember(Name="identity_type", EmitDefaultValue=false)]
+        [DataMember(Name= "identity_type", EmitDefaultValue= false)]
         public IdentityType IdentityType { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="UserIdentity" /> class.
@@ -37,7 +30,7 @@ namespace mParticle.Sdk.Model
         /// <param name="identity">identity (required).</param>
         /// <param name="timestampUnixtimeMs">timestampUnixtimeMs (required).</param>
         /// <param name="createdThisBatch">createdThisBatch (required).</param>
-        public UserIdentity(IdentityType identityType = default(IdentityType), string identity = default(string), int timestampUnixtimeMs = default(int), bool createdThisBatch = default(bool))
+        public UserIdentity(IdentityType identityType, string identity, int timestampUnixtimeMs = default(int), bool createdThisBatch = default(bool))
         {
             this.IdentityType = identityType;
             // to ensure "identity" is required (not null)
@@ -45,23 +38,23 @@ namespace mParticle.Sdk.Model
             this.TimestampUnixtimeMs = timestampUnixtimeMs;
             this.CreatedThisBatch = createdThisBatch;
         }
-        
+
         /// <summary>
         /// Gets or Sets Identity
         /// </summary>
-        [DataMember(Name="identity", EmitDefaultValue=false)]
+        [DataMember(Name= "identity", EmitDefaultValue= false)]
         public string Identity { get; set; }
 
         /// <summary>
         /// Gets or Sets TimestampUnixtimeMs
         /// </summary>
-        [DataMember(Name="timestamp_unixtime_ms", EmitDefaultValue=false)]
+        [DataMember(Name= "timestamp_unixtime_ms", EmitDefaultValue= false)]
         public int TimestampUnixtimeMs { get; set; }
 
         /// <summary>
         /// Gets or Sets CreatedThisBatch
         /// </summary>
-        [DataMember(Name="created_this_batch", EmitDefaultValue=false)]
+        [DataMember(Name= "created_this_batch", EmitDefaultValue= false)]
         public bool CreatedThisBatch { get; set; }
 
         /// <summary>
@@ -79,7 +72,7 @@ namespace mParticle.Sdk.Model
             sb.Append("}\n");
             return sb.ToString();
         }
-  
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -109,20 +102,20 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
                 (
                     this.IdentityType == input.IdentityType ||
                     this.IdentityType.Equals(input.IdentityType)
-                ) && 
+                ) &&
                 (
                     this.Identity == input.Identity ||
                     (this.Identity != null &&
                     this.Identity.Equals(input.Identity))
-                ) && 
+                ) &&
                 (
                     this.TimestampUnixtimeMs == input.TimestampUnixtimeMs ||
                     this.TimestampUnixtimeMs.Equals(input.TimestampUnixtimeMs)
-                ) && 
+                ) &&
                 (
                     this.CreatedThisBatch == input.CreatedThisBatch ||
                     this.CreatedThisBatch.Equals(input.CreatedThisBatch)
@@ -152,7 +145,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

@@ -1,60 +1,30 @@
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using OpenAPIDateConverter = mParticle.Sdk.Client.OpenAPIDateConverter;
+using System.Runtime.Serialization;
+using System.Text;
+using EventTypeEnum = mParticle.Model.EventType;
 
-namespace mParticle.Sdk.Model
+namespace mParticle.Model
 {
     /// <summary>
     /// OptOutEvent
     /// </summary>
     [DataContract]
-    public partial class OptOutEvent :  IEquatable<OptOutEvent>, IValidatableObject
+    public partial class OptOutEvent : BaseEvent, IEquatable<OptOutEvent>, IValidatableObject
     {
-        /// <summary>
-        /// Defines EventType
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum EventTypeEnum
-        {
-            /// <summary>
-            /// Enum Optout for value: opt_out
-            /// </summary>
-            [EnumMember(Value = "opt_out")]
-            Optout = 1
-
-        }
-
-        /// <summary>
-        /// Gets or Sets EventType
-        /// </summary>
-        [DataMember(Name="event_type", EmitDefaultValue=false)]
-        public EventTypeEnum? EventType { get; set; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="OptOutEvent" /> class.
         /// </summary>
-        /// <param name="data">data.</param>
-        /// <param name="eventType">eventType (default to EventTypeEnum.Optout).</param>
-        public OptOutEvent(OptOutEventData data = default(OptOutEventData), EventTypeEnum? eventType = EventTypeEnum.Optout)
-        {
-            this.Data = data;
-            this.EventType = eventType;
-        }
-        
+        public OptOutEvent(): base(EventTypeEnum.Optout)
+        {}
+
         /// <summary>
-        /// Gets or Sets Data
+        /// Gets or Sets IsOptedOut
         /// </summary>
-        [DataMember(Name="data", EmitDefaultValue=false)]
-        public OptOutEventData Data { get; set; }
+        [DataMember(Name = "is_opted_out", EmitDefaultValue = false)]
+        public bool IsOptedOut { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,19 +34,10 @@ namespace mParticle.Sdk.Model
         {
             var sb = new StringBuilder();
             sb.Append("class OptOutEvent {\n");
-            sb.Append("  Data: ").Append(Data).Append("\n");
-            sb.Append("  EventType: ").Append(EventType).Append("\n");
+            sb.Append(base.ToString());
+            sb.Append("  IsOptedOut: ").Append(IsOptedOut).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
-        }
-  
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -99,15 +60,11 @@ namespace mParticle.Sdk.Model
             if (input == null)
                 return false;
 
-            return 
+            return
+                base.Equals(input) &&
                 (
-                    this.Data == input.Data ||
-                    (this.Data != null &&
-                    this.Data.Equals(input.Data))
-                ) && 
-                (
-                    this.EventType == input.EventType ||
-                    this.EventType.Equals(input.EventType)
+                    this.IsOptedOut == input.IsOptedOut ||
+                    this.IsOptedOut.Equals(input.IsOptedOut)
                 );
         }
 
@@ -120,9 +77,8 @@ namespace mParticle.Sdk.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Data != null)
-                    hashCode = hashCode * 59 + this.Data.GetHashCode();
-                hashCode = hashCode * 59 + this.EventType.GetHashCode();
+                hashCode = base.GetHashCode();
+                hashCode = hashCode * 59 + this.IsOptedOut.GetHashCode();
                 return hashCode;
             }
         }
@@ -132,7 +88,7 @@ namespace mParticle.Sdk.Model
         /// </summary>
         /// <param name="validationContext">Validation context</param>
         /// <returns>Validation Result</returns>
-        IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             yield break;
         }

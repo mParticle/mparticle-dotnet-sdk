@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.UserIdentityChangeEventDataAllOf
+# mParticle.Model.UserIdentityChangeEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes

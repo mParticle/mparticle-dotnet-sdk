@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.CustomEvent
+# mParticle.Model.CustomEvent
 ## Properties
 
 Name | Type | Description | Notes

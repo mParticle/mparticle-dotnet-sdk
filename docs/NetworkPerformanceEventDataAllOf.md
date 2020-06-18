@@ -1,4 +1,4 @@
-# mParticle.Sdk.Model.NetworkPerformanceEventDataAllOf
+# mParticle.Model.NetworkPerformanceEventDataAllOf
 ## Properties
 
 Name | Type | Description | Notes
