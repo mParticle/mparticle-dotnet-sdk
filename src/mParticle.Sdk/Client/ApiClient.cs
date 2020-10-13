@@ -241,11 +241,17 @@ namespace mParticle.Client
             var existingDeserializer = req.JsonSerializer as IDeserializer;
             if (existingDeserializer != null)
             {
-                client.AddHandler(() => existingDeserializer, "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
+                foreach (var type in new String[] { "application/json", "text/json", "text/x-json", "text/javascript", "*+json" })
+                {
+                    client.AddHandler(type, () => existingDeserializer);
+                }
             }
             else
             {
-                client.AddHandler(() => new CustomJsonCodec(configuration), "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
+                foreach (var type in new String[] { "application/json", "text/json", "text/x-json", "text/javascript", "*+json" })
+                {
+                    client.AddHandler(type, () => new CustomJsonCodec(configuration));
+                }
             }
 
             client.Timeout = configuration.Timeout;
@@ -310,11 +316,15 @@ namespace mParticle.Client
             var existingDeserializer = req.JsonSerializer as IDeserializer;
             if (existingDeserializer != null)
             {
-                client.AddHandler(() => existingDeserializer, "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
+                foreach (var type in new String[] { "application/json", "text/json", "text/x-json", "text/javascript", "*+json" })
+                {
+                    client.AddHandler(type, () => existingDeserializer);
+                }
             }
             else
             {
-                client.AddHandler(() => new CustomJsonCodec(configuration), "application/json", "text/json", "text/x-json", "text/javascript", "*+json");
+                foreach (var type in new String[] { "application/json", "text/json", "text/x-json", "text/javascript", "*+json" })
+                client.AddHandler(type, () => new CustomJsonCodec(configuration));
             }
 
             client.Timeout = configuration.Timeout;
