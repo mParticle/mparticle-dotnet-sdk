@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace mParticle.Client
 {
@@ -52,6 +53,37 @@ namespace mParticle.Client
                 Assert.True(eventNameNum <= 100 && eventNameNum > 0);
             }
         }
+
+        [Fact]
+        public async Task UploadAsyncWithAwait()
+        {
+            var mParticle = new MockMParticle(new Configuration("apikey", "apiSecret"));
+            var eventQueue = new UploadQueue((IMParticle)mParticle);
+            
+            eventQueue.AddEvent(new CustomEvent("0"));
+       
+            await eventQueue.ForceUploadAsync(false);
+            Assert.Single(mParticle.uploadedBatches);
+            Assert.Single(mParticle.uploadedBatches[0].Events);
+            
+            var e = mParticle.uploadedBatches[0].Events[0];
+            Assert.Equal("0", ((CustomEvent)e).EventName);
+           
+        }
+
+        [Fact]
+        public void UploadAsyncWithoutAwait()
+        {
+            var mParticle = new MockMParticle(new Configuration("apikey", "apiSecret"));
+            var eventQueue = new UploadQueue((IMParticle)mParticle);
+
+            eventQueue.AddEvent(new CustomEvent("0"));
+
+            eventQueue.ForceUploadAsync(false);
+
+            //since we did not await, the network request should not have complete yet
+            Assert.Empty(mParticle.uploadedBatches);
+        }
     }
 
     internal class MockMParticle : IMParticle
@@ -91,10 +123,11 @@ namespace mParticle.Client
             return new ApiResponse<object>(HttpStatusCode.Accepted, new object(), "");
         }
 
-        public Task<ApiResponse<object>> UploadBatchAsync(Batch batch)
+        async public Task<ApiResponse<object>> UploadBatchAsync(Batch batch)
         {
+            await Task.Run(() => Thread.Sleep(5));
             uploadedBatches.Add(batch);
-            return Task.Run(() => new ApiResponse<object>(HttpStatusCode.Accepted, new object(), ""));
+            return new ApiResponse<object>(HttpStatusCode.Accepted, new object(), "");
         }
 
         public void LogEvent(BaseEvent baseEvent)
@@ -103,6 +136,11 @@ namespace mParticle.Client
         }
 
         public void Upload()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UploadAsync()
         {
             throw new NotImplementedException();
         }
