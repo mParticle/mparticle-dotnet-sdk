@@ -23,6 +23,11 @@ namespace mParticle.Api
         /// </summary>
         void Upload();
 
+        /// <summary>
+        /// Forces the upload of all events in the queue asynchronously
+        /// </summary>
+        Task UploadAsync();
+
          /// <summary>
         /// Get or Set the BaseBatch instance which will be used for uploading enqueued events
         /// logged via EventsApi#LogEvent
@@ -196,6 +201,14 @@ namespace mParticle.Api
         public void Upload()
         {
             _uploadQueue.ForceUpload();
+        }
+
+        /// <summary>
+        /// Forces the upload of all events in the queue asynchronously
+        /// </summary>
+        public async Task UploadAsync()
+        {
+            await _uploadQueue.ForceUploadAsync();
         }
 
         /// <summary>

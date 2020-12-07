@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 using mParticle.Api;
 using mParticle.Model;
@@ -68,7 +69,20 @@ namespace mParticle.Client
             {
                 _timer.Stop();
             }
-            Upload(null, null);
+            Upload(null, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            if (restartUploadLoop)
+            {
+                StartUploadLoop();
+            }
+        }
+
+        public async Task ForceUploadAsync(bool restartUploadLoop = true)
+        {
+            if (_timer != null)
+            {
+                _timer.Stop();
+            }
+            await Upload(null, null);
             if (restartUploadLoop)
             {
                 StartUploadLoop();
@@ -80,7 +94,12 @@ namespace mParticle.Client
             ScheduleUpload();
         }
 
-        async void Upload(object _, System.Timers.ElapsedEventArgs __)
+        void UploadLoop(object o, System.Timers.ElapsedEventArgs e)
+        {
+            Upload(o, e).ConfigureAwait(false).GetAwaiter().GetResult();
+        }
+
+        async Task Upload(object _, System.Timers.ElapsedEventArgs __)
         {
             var baseEvents = new List<BaseEventMessage>(_events);
             if (baseEvents.Count > 0)
@@ -135,7 +154,7 @@ namespace mParticle.Client
             {
                 Interval = _configuration.UploadInterval
             };
-            _timer.Elapsed += Upload;
+            _timer.Elapsed += UploadLoop;
             _timer.AutoReset = true;
             _timer.Start();
         }
