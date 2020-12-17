@@ -10,7 +10,7 @@
     <Owner>MParticle</Owner>
     <Description>MParticle Dotnet SDK</Description>
     <RootNamespace>mParticle</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\mParticle.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/mParticle/dotnet-sdk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
