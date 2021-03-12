@@ -28,7 +28,9 @@ namespace mParticle.Test
             // Set device identities
             batch.DeviceInfo = 
                     new DeviceInformation() {
-                        IosAdvertisingId = "5864e6b0-0d46-4667-a463-21d9493b6c10"
+                        IosAdvertisingId = "5864e6b0-0d46-4667-a463-21d9493b6c10",
+                        AttTimestampUnixtimeMs = 1552679728376,
+                        AttAuthorizationStatus = DeviceInformation.AttAuthorizationStatusEnum.Authorized
                     };            
 
             // Set user attributes
