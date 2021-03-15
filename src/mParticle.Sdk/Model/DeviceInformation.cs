@@ -123,7 +123,7 @@ namespace mParticle.Model
         /// <summary>
         /// Gets or Sets AttAuthorizationStatus
         /// </summary>
-        [DataMember(Name="attAuthorizationStatus", EmitDefaultValue=false)]
+        [DataMember(Name="att_authorization_status", EmitDefaultValue=false)]
         public AttAuthorizationStatusEnum? AttAuthorizationStatus { get; set; }
 
         /// <summary>
