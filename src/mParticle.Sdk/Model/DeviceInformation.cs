@@ -161,8 +161,8 @@ namespace mParticle.Model
         /// <param name="hasNfc">hasNfc.</param>
         /// <param name="bluetoothEnabled">bluetoothEnabled.</param>
         /// <param name="bluetoothVersion">bluetoothVersion.</param>
-        /// <param name="AttTimestampUnixtimeMs">AttTimestampUnixtimeMs.</param>
-        /// <param name="AttAuthorizationStatus">AttAuthorizationStatus.</param>
+        /// <param name="attTimestampUnixtimeMs">AttTimestampUnixtimeMs.</param>
+        /// <param name="attAuthorizationStatus">AttAuthorizationStatus.</param>
         /// <param name="iosIdfv">iosIdfv.</param>
         /// <param name="androidAdvertisingId">androidAdvertisingId.</param>
         /// <param name="buildVersionRelease">buildVersionRelease.</param>
