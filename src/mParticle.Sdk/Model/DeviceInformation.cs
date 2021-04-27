@@ -81,6 +81,51 @@ namespace mParticle.Model
         /// </summary>
         [DataMember(Name="platform", EmitDefaultValue=false)]
         public PlatformEnum? Platform { get; set; }
+
+        /// <summary>
+        /// Gets or Sets AttTimestampUnixtimeMs
+        /// </summary>
+        [DataMember(Name = "att_timestamp_unixtime_ms", EmitDefaultValue = false)]
+        public long? AttTimestampUnixtimeMs { get; set; }
+
+        /// <summary>
+        /// Defines AttAuthorizationStatus
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum AttAuthorizationStatusEnum
+        {
+            /// <summary>
+            /// Enum authorized for value: authorized
+            /// </summary>
+            [EnumMember(Value = "authorized")]
+            Authorized = 0,
+
+            /// <summary>
+            /// Enum denied for value: denied
+            /// </summary>
+            [EnumMember(Value = "denied")]
+            Denied = 1,
+
+            /// <summary>
+            /// Enum notDetermined for value: notDetermined
+            /// </summary>
+            [EnumMember(Value = "not_determined")]
+            NotDetermined = 2,
+
+            /// <summary>
+            /// Enum restricted for value: restricted
+            /// </summary>
+            [EnumMember(Value = "restricted")]
+            Restricted = 3
+
+        }
+
+        /// <summary>
+        /// Gets or Sets AttAuthorizationStatus
+        /// </summary>
+        [DataMember(Name="att_authorization_status", EmitDefaultValue=false)]
+        public AttAuthorizationStatusEnum? AttAuthorizationStatus { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceInformation" /> class.
         /// </summary>
@@ -116,6 +161,8 @@ namespace mParticle.Model
         /// <param name="hasNfc">hasNfc.</param>
         /// <param name="bluetoothEnabled">bluetoothEnabled.</param>
         /// <param name="bluetoothVersion">bluetoothVersion.</param>
+        /// <param name="attTimestampUnixtimeMs">AttTimestampUnixtimeMs.</param>
+        /// <param name="attAuthorizationStatus">AttAuthorizationStatus.</param>
         /// <param name="iosIdfv">iosIdfv.</param>
         /// <param name="androidAdvertisingId">androidAdvertisingId.</param>
         /// <param name="buildVersionRelease">buildVersionRelease.</param>
@@ -127,7 +174,7 @@ namespace mParticle.Model
         /// <param name="microsoftAdvertisingId">microsoftAdvertisingId.</param>
         /// <param name="microsoftPublisherId">microsoftPublisherId.</param>
         /// <param name="fireAdvertisingId">fireAdvertisingId.</param>
-        public DeviceInformation(string brand = default(string), string product = default(string), string device = default(string), string androidUuid = default(string), string deviceManufacturer = default(string), PlatformEnum? platform = default(PlatformEnum?), string osVersion = default(string), string deviceModel = default(string), int screenHeight = default(int), int screenWidth = default(int), int screenDpi = default(int), string deviceCountry = default(string), string localeLanguage = default(string), string localeCountry = default(string), string networkCountry = default(string), string networkCarrier = default(string), string networkCode = default(string), string networkMobileCountryCode = default(string), int timezoneOffset = default(int), string buildIdentifier = default(string), string httpHeaderUserAgent = default(string), string iosAdvertisingId = default(string), string pushToken = default(string), string cpuArchitecture = default(string), bool isTablet = default(bool), bool pushNotificationSoundEnabled = default(bool), bool pushNotificationVibrateEnabled = default(bool), string radioAccessTechnology = default(string), bool supportsTelephony = default(bool), bool hasNfc = default(bool), bool bluetoothEnabled = default(bool), string bluetoothVersion = default(string), string iosIdfv = default(string), string androidAdvertisingId = default(string), string buildVersionRelease = default(string), bool limitAdTracking = default(bool), string ampId = default(string), bool isDst = default(bool), string rokuAdvertisingId = default(string), string rokuPublisherId = default(string), string microsoftAdvertisingId = default(string), string microsoftPublisherId = default(string), string fireAdvertisingId = default(string))
+        public DeviceInformation(string brand = default(string), string product = default(string), string device = default(string), string androidUuid = default(string), string deviceManufacturer = default(string), PlatformEnum? platform = default(PlatformEnum?), string osVersion = default(string), string deviceModel = default(string), int screenHeight = default(int), int screenWidth = default(int), int screenDpi = default(int), string deviceCountry = default(string), string localeLanguage = default(string), string localeCountry = default(string), string networkCountry = default(string), string networkCarrier = default(string), string networkCode = default(string), string networkMobileCountryCode = default(string), int timezoneOffset = default(int), string buildIdentifier = default(string), string httpHeaderUserAgent = default(string), string iosAdvertisingId = default(string), string pushToken = default(string), string cpuArchitecture = default(string), bool isTablet = default(bool), bool pushNotificationSoundEnabled = default(bool), bool pushNotificationVibrateEnabled = default(bool), string radioAccessTechnology = default(string), bool supportsTelephony = default(bool), bool hasNfc = default(bool), bool bluetoothEnabled = default(bool), string bluetoothVersion = default(string), long? attTimestampUnixtimeMs = default(long?), AttAuthorizationStatusEnum? attAuthorizationStatus = default(AttAuthorizationStatusEnum), string iosIdfv = default(string), string androidAdvertisingId = default(string), string buildVersionRelease = default(string), bool limitAdTracking = default(bool), string ampId = default(string), bool isDst = default(bool), string rokuAdvertisingId = default(string), string rokuPublisherId = default(string), string microsoftAdvertisingId = default(string), string microsoftPublisherId = default(string), string fireAdvertisingId = default(string))
         {
             this.Brand = brand;
             this.Product = product;
@@ -161,6 +208,8 @@ namespace mParticle.Model
             this.HasNfc = hasNfc;
             this.BluetoothEnabled = bluetoothEnabled;
             this.BluetoothVersion = bluetoothVersion;
+            this.AttTimestampUnixtimeMs= attTimestampUnixtimeMs;
+            this.AttAuthorizationStatus = attAuthorizationStatus;
             this.IosIdfv = iosIdfv;
             this.AndroidAdvertisingId = androidAdvertisingId;
             this.BuildVersionRelease = buildVersionRelease;
@@ -466,6 +515,8 @@ namespace mParticle.Model
             sb.Append("  HasNfc: ").Append(HasNfc).Append("\n");
             sb.Append("  BluetoothEnabled: ").Append(BluetoothEnabled).Append("\n");
             sb.Append("  BluetoothVersion: ").Append(BluetoothVersion).Append("\n");
+            sb.Append("  AttTimestampUnixtimeMs: ").Append(AttTimestampUnixtimeMs).Append("\n");
+            sb.Append("  AttAuthorizationStatus: ").Append(AttAuthorizationStatus).Append("\n");
             sb.Append("  IosIdfv: ").Append(IosIdfv).Append("\n");
             sb.Append("  AndroidAdvertisingId: ").Append(AndroidAdvertisingId).Append("\n");
             sb.Append("  BuildVersionRelease: ").Append(BuildVersionRelease).Append("\n");
@@ -661,6 +712,14 @@ namespace mParticle.Model
                     this.BluetoothVersion.Equals(input.BluetoothVersion))
                 ) && 
                 (
+                    this.AttTimestampUnixtimeMs == input.AttTimestampUnixtimeMs ||
+                    this.AttTimestampUnixtimeMs.Equals(input.AttTimestampUnixtimeMs)
+                ) &&
+                (
+                    this.AttAuthorizationStatus == input.AttAuthorizationStatus ||
+                    this.AttAuthorizationStatus.Equals(input.AttAuthorizationStatus)
+                ) && 
+                (
                     this.IosIdfv == input.IosIdfv ||
                     (this.IosIdfv != null &&
                     this.IosIdfv.Equals(input.IosIdfv))
@@ -777,6 +836,10 @@ namespace mParticle.Model
                 hashCode = hashCode * 59 + this.BluetoothEnabled.GetHashCode();
                 if (this.BluetoothVersion != null)
                     hashCode = hashCode * 59 + this.BluetoothVersion.GetHashCode();
+                if (this.AttTimestampUnixtimeMs != null)
+                    hashCode = hashCode * 59 + this.AttTimestampUnixtimeMs.GetHashCode();
+                if (this.AttAuthorizationStatus != null)
+                    hashCode = hashCode * 59 + this.AttAuthorizationStatus.GetHashCode();
                 if (this.IosIdfv != null)
                     hashCode = hashCode * 59 + this.IosIdfv.GetHashCode();
                 if (this.AndroidAdvertisingId != null)

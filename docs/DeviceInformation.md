@@ -35,6 +35,8 @@ Name | Type | Description | Notes
 **HasNfc** | **bool** |  | [optional] 
 **BluetoothEnabled** | **bool** |  | [optional] 
 **BluetoothVersion** | **string** |  | [optional] 
+**AttTimestampUnixtimeMs** | **int** |  | [optional]
+**AttAuthorizationStatus** | **string** |  | [optional]
 **IosIdfv** | **string** |  | [optional] 
 **AndroidAdvertisingId** | **string** |  | [optional] 
 **BuildVersionRelease** | **string** |  | [optional] 
