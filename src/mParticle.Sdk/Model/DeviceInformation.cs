@@ -98,25 +98,25 @@ namespace mParticle.Model
             /// Enum authorized for value: authorized
             /// </summary>
             [EnumMember(Value = "authorized")]
-            Authorized = 1,
+            Authorized = 0,
 
             /// <summary>
             /// Enum denied for value: denied
             /// </summary>
             [EnumMember(Value = "denied")]
-            Denied = 2,
+            Denied = 1,
 
             /// <summary>
             /// Enum notDetermined for value: notDetermined
             /// </summary>
             [EnumMember(Value = "not_determined")]
-            NotDetermined = 3,
+            NotDetermined = 2,
 
             /// <summary>
             /// Enum restricted for value: restricted
             /// </summary>
             [EnumMember(Value = "restricted")]
-            Restricted = 4
+            Restricted = 3
 
         }
 
