@@ -1,0 +1,72 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New version to release'
+        required: true
+jobs:
+  # SDK release is done from public master branch.
+  confirm-master-branch:
+    name: "Confirm release is run on master branch"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Branch name
+        run: |
+          BRANCHNAME=${GITHUB_REF##*/}
+          echo "confirming branch name, branch name is:"
+          echo $BRANCHNAME
+          if [ $BRANCHNAME != "master" ]
+          then
+            echo "You can only run a release from the master branch, you are trying to run it from ${BRANCHNAME}"
+            exit 1
+          fi
+  build-test:
+    name: "Build and Test"
+    needs: confirm-master-branch
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.1.*
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+  bump-version:
+    name: "Create Version-bump Commit"
+    needs: build-test
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: "Bump Version"
+        run: ./release.sh ${{ github.event.inputs.version }}
+
+  build-artifact:
+    name: "Build Artifact and Release"
+    needs: bump-version
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.1.*
+      - name: "Build Artifact"
+        run: nutget pack -o .
+      - name: "Ship to Nuget"
+        run: nuget push mParticle.${{ github.event.inputs.version}}.nupkg
+
+
+
+
+
+
