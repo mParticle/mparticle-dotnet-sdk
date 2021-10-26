@@ -8,6 +8,7 @@
 *.sln.docstates
 ./nuget
 .vs/*
+*.bak
 
 # Build results
 

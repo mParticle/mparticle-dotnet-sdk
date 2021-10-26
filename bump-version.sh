@@ -5,10 +5,10 @@ git pull origin master
 
 
 #update Configuration.cs
-sed  -i '' "s/public const string Version = \".*\"/public const string Version = \"$1\"/g" src/mParticle.Sdk/Client/Configuration.cs
+sed  -i '.bak' "s/public const string Version = \".*\";/public const string Version = \"$1\";/g" src/mParticle.Sdk/Client/Configuration.cs
 
 #update csproj
-sed  -i '' "s/\<Version\>.*\</\<Version\>$1\</g" src/mParticle.Sdk/mParticle.Sdk.csproj
+sed  -i '.bak' "s/\<Version\>.*\</\<Version\>$1\</g" src/mParticle.Sdk/mParticle.Sdk.csproj
 
 #commit the version bump, tag, and push to private and public
 git add src/mParticle.Sdk/Client/Configuration.cs
