@@ -66,13 +66,13 @@ namespace mParticle.Model
         /// Gets or Sets SessionStartUnixtimeMs
         /// </summary>
         [DataMember(Name = "session_start_unixtime_ms", EmitDefaultValue = false)]
-        public int SessionStartUnixtimeMs { get; set; }
+        public long SessionStartUnixtimeMs { get; set; }
 
         /// <summary>
         /// Gets or Sets EventStartUnixtimeMs
         /// </summary>
         [DataMember(Name = "event_start_unixtime_ms", EmitDefaultValue = false)]
-        public int EventStartUnixtimeMs { get; set; }
+        public long EventStartUnixtimeMs { get; set; }
 
         /// <summary>
         /// Gets or Sets CustomAttributes

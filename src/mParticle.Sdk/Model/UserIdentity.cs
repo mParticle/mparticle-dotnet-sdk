@@ -30,7 +30,7 @@ namespace mParticle.Model
         /// <param name="identity">identity (required).</param>
         /// <param name="timestampUnixtimeMs">timestampUnixtimeMs (required).</param>
         /// <param name="createdThisBatch">createdThisBatch (required).</param>
-        public UserIdentity(IdentityType identityType, string identity, int timestampUnixtimeMs = default(int), bool createdThisBatch = default(bool))
+        public UserIdentity(IdentityType identityType, string identity, long timestampUnixtimeMs = default(long), bool createdThisBatch = default(bool))
         {
             this.IdentityType = identityType;
             // to ensure "identity" is required (not null)
@@ -49,7 +49,7 @@ namespace mParticle.Model
         /// Gets or Sets TimestampUnixtimeMs
         /// </summary>
         [DataMember(Name= "timestamp_unixtime_ms", EmitDefaultValue= false)]
-        public int TimestampUnixtimeMs { get; set; }
+        public long TimestampUnixtimeMs { get; set; }
 
         /// <summary>
         /// Gets or Sets CreatedThisBatch
