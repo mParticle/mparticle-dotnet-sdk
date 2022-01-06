@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+set -o errexit
+
 : ${1?"Version missing - usage: $0 x.y.z"}
 
 git pull origin master
-
 
 #update Configuration.cs
 sed  -i '.bak' "s/public const string Version = \".*\";/public const string Version = \"$1\";/g" src/mParticle.Sdk/Client/Configuration.cs
