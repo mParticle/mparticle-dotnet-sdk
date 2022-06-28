@@ -8,7 +8,7 @@ jobs:
   # SDK release is done from public master branch.
   confirm-master-branch:
     name: "Confirm release is run on master branch"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
@@ -25,14 +25,10 @@ jobs:
   build-test:
     name: "Build and Test"
     needs: confirm-master-branch
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 2.1.*
       - name: "Install dependencies"
         run: dotnet restore
       - name: "Build"
@@ -42,16 +38,12 @@ jobs:
   build-artifact:
     name: "Build Artifact and Release"
     needs: build-test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: "Git checkout"
         uses: actions/checkout@v2
         with:
           ref: master
-      - name: "Setup .NET Core"
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 2.1.*
       - name: "Setup Nuget"
         uses: nuget/setup-nuget@v1
         with:
