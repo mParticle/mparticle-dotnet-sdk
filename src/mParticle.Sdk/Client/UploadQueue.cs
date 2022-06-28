@@ -12,8 +12,9 @@ namespace mParticle.Client
         private IMParticle _mParticle;
         private Batch _baseBatch = new Batch();
         private IReadableConfiguration _configuration;
-        private List<BaseEventMessage> _events = new List<BaseEventMessage>();
+        internal List<BaseEventMessage> _events = new List<BaseEventMessage>();
         private Timer _timer;
+        internal DateTime _retryAfterTimestamp = DateTime.Now;
         private object syncLock = new object();
 
         public UploadQueue(IMParticle mParticle)
@@ -101,6 +102,13 @@ namespace mParticle.Client
 
         async Task Upload(object _, System.Timers.ElapsedEventArgs __)
         {
+            // Check timestamp to see if allowed to upload, if not, skip
+            if (_retryAfterTimestamp > DateTime.Now)
+            {
+                Logger.Warning("Due to rate limiting, waiting " + (_retryAfterTimestamp - DateTime.Now).TotalSeconds + " seconds before uploading more events");
+                return;
+            }
+
             var baseEvents = new List<BaseEventMessage>(_events);
             if (baseEvents.Count > 0)
             {
@@ -132,6 +140,22 @@ namespace mParticle.Client
                 else if ((int)result.StatusCode == 429 || (int)result.StatusCode >= 500)
                 {
                     Logger.Warning("Unable to upload Events, these will be retried at next upload interval. \n\tResponse Code: " + result.ResponseType + "\n\tMessage: " + result.ErrorText);
+
+                    // Check for Retry-After header and adjust next upload queue timer interval to match
+                    if (result.Headers.ContainsKey("Retry-After"))
+                    {
+                        var retryAfter = result.Headers["Retry-After"];
+                        if (retryAfter != null && retryAfter.Count > 0)
+                        {
+                            double retryAfterDouble;
+                            if (double.TryParse(retryAfter[0], out retryAfterDouble))
+                            {
+                                Logger.Warning("Due to API throttling, you must wait " + retryAfterDouble + " seconds before uploading another event, so adjusting the upload interval to match");
+                                _retryAfterTimestamp = DateTime.Now.AddSeconds(retryAfterDouble);
+                            }
+                        }
+                    }
+
                     batchEvents.ForEach(x => x.Status = Status.Ready);
                 }
                 //remove other 400s, can't be retried
