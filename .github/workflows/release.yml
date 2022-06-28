@@ -52,7 +52,7 @@ jobs:
       - name: "Build Artifact"
         run: dotnet pack -o .
       - name: "Ship to Nuget"
-        run: nuget push src/mParticle.Sdk/mParticle.Sdk.${{ github.event.inputs.version}}.nupkg -Source https://api.nuget.org/v3/index.json
+        run: nuget push mParticle.Sdk.${{ github.event.inputs.version}}.nupkg -Source https://api.nuget.org/v3/index.json
 
 
 
