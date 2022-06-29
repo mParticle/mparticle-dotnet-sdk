@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Net;
 using mParticle.Client;
 using mParticle.Model;
 
@@ -97,6 +98,8 @@ namespace mParticle.Api
 
         private ApiClient _apiClient;
         private UploadQueue _uploadQueue;
+        private long _retryAfterTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+        private ApiResponse<Object> _latestResponse;
 
         /// <summary>
         /// Get or Set the MParticle instance
@@ -219,6 +222,8 @@ namespace mParticle.Api
         /// <returns></returns>
         public ApiResponse<Object> UploadBatch(Batch batch)
         {
+            if (_retryAfterTimestamp > ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds()) return _latestResponse;
+
             Logger.Verbose("Uploading Batch");
             RequestOptions localVarRequestOptions = new RequestOptions();
 
@@ -241,8 +246,9 @@ namespace mParticle.Api
             localVarRequestOptions.Data = batch;
 
             // make the HTTP request
-            var localVarResponse = _apiClient.Post<Object>("/events", localVarRequestOptions);
-            return localVarResponse;
+            _latestResponse = _apiClient.Post<Object>("/events", localVarRequestOptions);
+            if (_latestResponse.StatusCode == (HttpStatusCode)429) _retryAfterTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() + long.Parse(_latestResponse.Headers["Retry-After"][0]);
+            return _latestResponse;
         }
 
         /// <summary>
@@ -253,6 +259,8 @@ namespace mParticle.Api
         /// <returns>Task of void</returns>
         public async Task<ApiResponse<object>> UploadBatchAsync(Batch batch)
         {
+            if (_retryAfterTimestamp > ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds()) return _latestResponse;
+
             RequestOptions localVarRequestOptions = new RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -275,8 +283,9 @@ namespace mParticle.Api
 
 
             // make the HTTP request
-            var localVarResponse = await _apiClient.PostAsync<Object>("/events", localVarRequestOptions);
-            return localVarResponse;
+            _latestResponse = await _apiClient.PostAsync<Object>("/events", localVarRequestOptions);
+            if (_latestResponse.StatusCode == (HttpStatusCode)429) _retryAfterTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() + long.Parse(_latestResponse.Headers["Retry-After"][0]);
+            return _latestResponse;
         }
 
         /// <summary>
@@ -287,6 +296,8 @@ namespace mParticle.Api
         /// <returns></returns>
         public ApiResponse<Object> BulkUploadBatches(Collection<Batch> batches)
         {
+            if (_retryAfterTimestamp > ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds()) return _latestResponse;
+
             RequestOptions localVarRequestOptions = new RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -315,7 +326,9 @@ namespace mParticle.Api
 
 
             // make the HTTP request
-            return _apiClient.Post<Object>("/bulkevents", localVarRequestOptions);
+            _latestResponse = _apiClient.Post<Object>("/bulkevents", localVarRequestOptions);
+            if (_latestResponse.StatusCode == (HttpStatusCode)429) _retryAfterTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() + long.Parse(_latestResponse.Headers["Retry-After"][0]);
+            return _latestResponse;
         }
 
         /// <summary>
@@ -326,6 +339,8 @@ namespace mParticle.Api
         /// <returns>Task of void</returns>
         public async Task<ApiResponse<Object>> BulkUploadBatchesAsync(Collection<Batch> batches)
         {
+            if (_retryAfterTimestamp > ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds()) return _latestResponse;
+
             RequestOptions localVarRequestOptions = new RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -355,10 +370,9 @@ namespace mParticle.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this._apiClient.PostAsync<Object>("/bulkevents", localVarRequestOptions);
-
-            return localVarResponse;
+            _latestResponse = await this._apiClient.PostAsync<Object>("/bulkevents", localVarRequestOptions);
+            if (_latestResponse.StatusCode == (HttpStatusCode)429) _retryAfterTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() + long.Parse(_latestResponse.Headers["Retry-After"][0]);
+            return _latestResponse;
         }
-
     }
 }
