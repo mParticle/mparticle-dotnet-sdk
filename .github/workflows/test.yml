@@ -16,3 +16,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+
+  security-checks:
+    name: "Security Lint Checks"
+    uses: mparticle/mparticle-workflows/.github/workflows/security-checks.yml@main
+    with:
+      base_branch: "master"
